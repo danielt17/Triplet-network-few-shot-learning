@@ -52,7 +52,7 @@ class TripletNetClass(nn.Module):
 def TripletNetModel(device):
     model = Net()
     Tnet = TripletNetClass(model).to(device)
-    print('Triplet network defined succefully !')
+    print('Triplet network defined succefully!')
     return Tnet
 
 # %% Main
