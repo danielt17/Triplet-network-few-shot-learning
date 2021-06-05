@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 
 # %% Load data
 batch_size = 4
-trainset = FashionMNIST_t('../data', train=True, download=True,transform=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.1307,), (0.3081,))]))
-testset = FashionMNIST_t('../data', train=False, transform=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.1307,), (0.3081,))]))
+trainset = FashionMNIST_t('../data', train=True, download=True,transform=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.4914,),(0.2023,))]))
+testset = FashionMNIST_t('../data', train=False, transform=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.4914,),(0.2023,))]))
 train_loader = torch.utils.data.DataLoader(trainset,batch_size = batch_size, shuffle=True)
 test_loader = torch.utils.data.DataLoader(testset,batch_size = batch_size ,shuffle=True)
 
