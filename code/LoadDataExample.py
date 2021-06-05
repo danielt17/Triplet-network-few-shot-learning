@@ -30,15 +30,15 @@ anchor, negative, positive = dataiter.next()
 plt.figure()
 for idx,image in enumerate(anchor):
     plt.subplot(3,4,idx+1)
-    plt.imshow(convert_to_imshow_format(image)[:,:,0])
+    plt.imshow(convert_to_imshow_format(image)[:,:,0],cmap=plt.cm.binary)
     plt.title('Anchor')
 for idx,image in enumerate(positive):
     plt.subplot(3,4,idx+5)
-    plt.imshow(convert_to_imshow_format(image)[:,:,0])
+    plt.imshow(convert_to_imshow_format(image)[:,:,0],cmap=plt.cm.binary)
     plt.title('Positive')
 for idx,image in enumerate(negative):
     plt.subplot(3,4,idx+9)
-    plt.imshow(convert_to_imshow_format(image)[:,:,0])
+    plt.imshow(convert_to_imshow_format(image)[:,:,0],cmap=plt.cm.binary)
     plt.title('Negative')
     
     
