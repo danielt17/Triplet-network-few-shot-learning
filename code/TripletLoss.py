@@ -9,7 +9,6 @@ Created on Sat Jun  5 15:08:36 2021
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 # %% Triplet loss
 
