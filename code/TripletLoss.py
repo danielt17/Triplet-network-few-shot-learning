@@ -12,9 +12,10 @@ import torch.nn as nn
 
 # %% Triplet loss
 
-def tripletLoss(margin = 0.2, p=2):
+def tripletLoss(anchor,positive,negative,margin = 0.2, p=2):
     triplet_loss = nn.TripletMarginLoss(margin=margin, p=p)
-    return triplet_loss
+    loss = triplet_loss(anchor, positive, negative)
+    return loss
 
 def CustomLoss(dist_plus,dist_minus,margin = 1):
     norm = torch.add(torch.exp(dist_plus),torch.exp(dist_minus))
@@ -27,11 +28,10 @@ def CustomLoss(dist_plus,dist_minus,margin = 1):
 
 if __name__ == '__main__':
     # example 1
-    triplet_loss = tripletLoss()
     anchor = torch.randn(100, 128, requires_grad=True)
     positive = torch.randn(100, 128, requires_grad=True)
     negative = torch.randn(100, 128, requires_grad=True)
-    output = triplet_loss(anchor, positive, negative)
+    output = tripletLoss(anchor, positive, negative)
     output.backward()
     # example 2
     dist_plus = torch.randn(100, 128, requires_grad=True)
