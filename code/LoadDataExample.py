@@ -12,6 +12,13 @@ from torchvision import transforms
 from DataBase import FashionMNIST_t
 import matplotlib.pyplot as plt
 
+# %% Convert tensor to image
+
+def convert_to_imshow_format(image):
+    image=image/2+0.5
+    image=image.numpy()
+    return image.transpose(1,2,0)
+
 # %% Load data
 batch_size = 4
 trainset = FashionMNIST_t('../data', train=True, download=True,transform=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.4914,),(0.2023,))]))
@@ -19,10 +26,7 @@ testset = FashionMNIST_t('../data', train=False, transform=transforms.Compose([t
 train_loader = torch.utils.data.DataLoader(trainset,batch_size = batch_size, shuffle=True)
 test_loader = torch.utils.data.DataLoader(testset,batch_size = batch_size ,shuffle=True)
 
-def convert_to_imshow_format(image):
-    image=image/2+0.5
-    image=image.numpy()
-    return image.transpose(1,2,0)
+# %% Show images
 
 dataiter=iter(train_loader)
 anchor, negative, positive = dataiter.next()
