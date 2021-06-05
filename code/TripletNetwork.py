@@ -38,9 +38,11 @@ class TripletNetClass(nn.Module):
         self.embeddingnet = embeddingnet
 
     def forward(self, x, y, z):
+        # embeddings
         embedded_x = self.embeddingnet(x)
         embedded_y = self.embeddingnet(y)
         embedded_z = self.embeddingnet(z)
+        # distance
         dist_a = F.pairwise_distance(embedded_x, embedded_y, 2)
         dist_b = F.pairwise_distance(embedded_x, embedded_z, 2)
         return dist_a, dist_b, embedded_x, embedded_y, embedded_z
@@ -50,6 +52,7 @@ class TripletNetClass(nn.Module):
 def TripletNetModel(device):
     model = Net()
     Tnet = TripletNetClass(model).to(device)
+    print('Triplet network defined succefully !')
     return Tnet
 
 # %% Main
@@ -57,4 +60,4 @@ def TripletNetModel(device):
 if __name__ == '__main__':
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     Tnet = TripletNetModel(device)
-    print('Triplet network defined succefully !')
+    
