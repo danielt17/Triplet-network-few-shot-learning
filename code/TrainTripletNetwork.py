@@ -62,7 +62,7 @@ def evaluate_test(test_loader,loss_type):
 # %% Main
 
 if __name__ == '__main__':
-    epochs = 100;
+    epochs = 20;
     batch_size = 64;
     gamma = 0.99;
     loss_type = 1; # 0 - Triplet loss, 1 - Custom loss paper
