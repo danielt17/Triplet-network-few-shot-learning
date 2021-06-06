@@ -55,6 +55,19 @@ def LoadBestModel(load_model,loss_type):
         model.eval()
     return model
 
+def evaluate_test(test_loader,loss_type):
+    model.eval()
+    losses = []
+    for batch_idx, (anchor, negative, positive) in enumerate(Bar(test_loader)):
+        anchor = anchor.to(device).requires_grad_()
+        negative = negative.to(device).requires_grad_()
+        positive = positive.to(device).requires_grad_()
+        dist_plus, dist_minus, embedded_anchor, embedded_positive, embedded_negative = model(anchor,positive,negative)
+        loss = lossFunction(dist_plus, dist_minus, embedded_anchor, embedded_positive, embedded_negative,loss_type=loss_type)
+        losses.append(loss.item())
+    losses = np.mean(losses)
+    return losses
+
 # %% Main
 
 if __name__ == '__main__':
@@ -72,13 +85,13 @@ if __name__ == '__main__':
     model = TripletNetModel(device)
     optimizer = Adam(model.parameters(),lr = lr)
     scheduler = ExponentialLR(optimizer, gamma=gamma)
-    losses = []; dists_plus = []; dists_minus = []
+    losses = []; test_losses = []; dists_plus = []; dists_minus = []
     plt.figure()
     cur_loss = np.inf
     for epoch in range(epochs):
         print('Epoch number: ' + str(epoch + 1))
         plt.clf()
-        dists_plus_temp = 0; dists_minus_temp = 0
+        dists_plus_temp = 0; dists_minus_temp = 0; loss_cur = [];
         for batch_idx, (anchor, negative, positive) in enumerate(Bar(train_loader)):
             anchor = anchor.to(device).requires_grad_()
             negative = negative.to(device).requires_grad_()
@@ -91,8 +104,10 @@ if __name__ == '__main__':
             optimizer.step()
             dists_plus_temp =+ np.mean(dist_plus.detach().cpu().numpy())
             dists_minus_temp =+ np.mean(dist_minus.detach().cpu().numpy())
+            loss_cur.append(loss.item())
         scheduler.step()
-        losses.append(loss.item())
+        losses.append(np.mean(loss_cur))
+        test_losses.append(evaluate_test(test_loader,loss_type))
         print('Loss: ' + str(losses[-1]))
         dists_plus.append(dists_plus_temp); dists_minus.append(dists_minus_temp); 
         cur_loss = min(losses[-1],cur_loss)
@@ -101,17 +116,22 @@ if __name__ == '__main__':
                 torch.save(model.state_dict(), '../models/triplet_loss/TripletModel' + str(cur_loss))
             elif loss_type == 1:
                 torch.save(model.state_dict(), '../models/custom_loss/TripletModel' + str(cur_loss))
-        plt.subplot(1,3,1)
+        plt.subplot(2,2,1)
         plt.semilogy(losses)
         plt.xlabel('Iteartion [#]')
         plt.ylabel('Loss')
-        plt.title('Loss')
-        plt.subplot(1,3,2)
+        plt.title('Training loss')
+        plt.subplot(2,2,2)
+        plt.semilogy(test_losses)
+        plt.xlabel('Iteartion [#]')
+        plt.ylabel('Loss')
+        plt.title('Test loss')
+        plt.subplot(2,2,3)
         plt.plot(dists_plus)
         plt.xlabel('Iteartion [#]')
         plt.ylabel('MSE')
         plt.title('Similarity')
-        plt.subplot(1,3,3)
+        plt.subplot(2,2,4)
         plt.plot(dists_minus)
         plt.xlabel('Iteartion [#]')
         plt.ylabel('MSE')
