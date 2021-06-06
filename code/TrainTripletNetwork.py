@@ -54,7 +54,7 @@ def LoadBestModel(load_model):
 # %% Main
 
 if __name__ == '__main__':
-    lr = 5e-5; 
+    lr = 1e-2; 
     batch_size = 64;
     epochs = 100;
     gamma = 0.99;
