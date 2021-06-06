@@ -29,7 +29,7 @@ class Net(nn.Module):
             x = F.relu(F.max_pool2d(self.conv3_drop(self.conv3(x)), 2))
             x = x.view(x.size(0), 320)
             x = F.relu(self.fc1(x))
-            x = torch.sigmoid(self.fc2(x))
+            x = self.fc2(x)
             return x
         
 # %% Triplet net embedding and distances

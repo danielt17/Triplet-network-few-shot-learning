@@ -61,7 +61,7 @@ if __name__ == '__main__':
     if loss_type == 0:
         lr = 1e-4; 
     elif loss_type == 1:
-        lr = 1e-5; 
+        lr = 5e-5; 
     save_model = True; load_model = True;
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     train_loader, test_loader = LoadData(batch_size)
