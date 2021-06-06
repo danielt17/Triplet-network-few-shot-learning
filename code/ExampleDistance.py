@@ -27,7 +27,7 @@ trainset = FashionMNIST_t('../data', train=True, download=True,transform=transfo
 testset = FashionMNIST_t('../data', train=False, transform=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.4914,),(0.2023,))]))
 train_loader = torch.utils.data.DataLoader(trainset,batch_size = batch_size, shuffle=True)
 test_loader = torch.utils.data.DataLoader(testset,batch_size = batch_size ,shuffle=True)
-model = LoadBestModel(load_model=True)
+model = LoadBestModel(load_model=True,loss_type = 1)
 
 # %% Show images
 

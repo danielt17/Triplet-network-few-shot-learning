@@ -36,26 +36,30 @@ def lossFunction(dist_plus, dist_minus, embedded_anchor, embedded_positive, embe
         loss = CustomLoss(dist_plus,dist_minus)
     return loss
 
-def LoadBestModel(load_model):
+def LoadBestModel(load_model,loss_type):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = TripletNetModel(device)
     file_names = []; model_losses = [];
-    for file in os.listdir('../models'):
+    for file in os.listdir('../custom_loss/models'):
         file_names.append(file)
         model_losses.append(np.float64(file.split('TripletModel')[1]))
     model_losses = np.asarray(model_losses)
     file_num = np.argmin(model_losses)
     model_best_name = file_names[file_num]
+    
     if load_model:
-       model.load_state_dict(torch.load('../models/' + model_best_name))
-       model.eval()
+        if loss_type == 0:
+            model.load_state_dict(torch.load('../models/triplet_loss/' + model_best_name))
+        elif loss_type == 1:
+            model.load_state_dict(torch.load('../models/custom_loss/' + model_best_name))
+        model.eval()
     return model
 
 # %% Main
 
 if __name__ == '__main__':
     epochs = 100;
-    batch_size = 128;
+    batch_size = 64;
     gamma = 0.99;
     loss_type = 1; # 0 - Triplet loss, 1 - Custom loss paper
     if loss_type == 0:
@@ -93,7 +97,10 @@ if __name__ == '__main__':
         dists_plus.append(dists_plus_temp); dists_minus.append(dists_minus_temp); 
         cur_loss = min(losses[-1],cur_loss)
         if save_model and cur_loss == losses[-1]:
-            torch.save(model.state_dict(), '../models/TripletModel' + str(cur_loss))
+            if loss_type == 0:
+                torch.save(model.state_dict(), '../models/triplet_loss/TripletModel' + str(cur_loss))
+            elif loss_type == 1:
+                torch.save(model.state_dict(), '../models/custom_loss/TripletModel' + str(cur_loss))
         plt.subplot(1,3,1)
         plt.semilogy(losses)
         plt.xlabel('Iteartion [#]')
@@ -113,7 +120,7 @@ if __name__ == '__main__':
         plt.show()
         plt.pause(0.02)
     # Load best model
-    model = LoadBestModel(load_model)
+    model = LoadBestModel(load_model,loss_type)
     
     
     
