@@ -30,7 +30,8 @@ class Net(nn.Module):
             x = x.view(-1, 320)
             x = F.relu(self.fc1(x))
             x = F.dropout(x, training=self.training)
-            return self.fc2(x)
+            x = self.fc2(x)
+            return x
         
 # %% Triplet net embedding and distances
 
