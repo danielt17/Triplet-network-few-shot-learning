@@ -36,6 +36,21 @@ def lossFunction(dist_plus, dist_minus, embedded_anchor, embedded_positive, embe
         loss = CustomLoss(dist_plus,dist_minus)
     return loss
 
+def LoadBestModel(load_model):
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    model = TripletNetModel(device)
+    file_names = []; model_losses = [];
+    for file in os.listdir('../models'):
+        file_names.append(file)
+        model_losses.append(np.float64(file.split('TripletModel')[1]))
+    model_losses = np.asarray(model_losses)
+    file_num = np.argmin(model_losses)
+    model_best_name = file_names[file_num]
+    if load_model:
+       model.load_state_dict(torch.load('../models/' + model_best_name))
+       model.eval()
+    return model
+
 # %% Main
 
 if __name__ == '__main__':
@@ -94,16 +109,7 @@ if __name__ == '__main__':
         plt.show()
         plt.pause(0.02)
     # Load best model
-    file_names = []; model_losses = [];
-    for file in os.listdir('..\models'):
-        file_names.append(file)
-        model_losses.append(np.float64(file.split('TripletModel')[1]))
-    model_losses = np.asarray(model_losses)
-    file_num = np.argmin(model_losses)
-    model_best_name = file_names[file_num]
-    if load_model:
-       model.load_state_dict(torch.load('../models/' + model_best_name))
-       model.eval()
+    model = LoadBestModel(load_model)
     
     
     
