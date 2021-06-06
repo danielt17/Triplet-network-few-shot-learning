@@ -71,7 +71,7 @@ if __name__ == '__main__':
         losses.append(loss.item())
         dists_plus.append(dists_plus_temp); dists_minus.append(dists_minus_temp); 
         plt.subplot(1,3,1)
-        plt.plot(losses)
+        plt.semilogy(losses)
         plt.xlabel('Iteartion [#]')
         plt.ylabel('Loss')
         plt.title('Loss')
@@ -92,7 +92,4 @@ if __name__ == '__main__':
         torch.save(model.state_dict(), '../models/TripletModel')
         model.load_state_dict(torch.load('../models/TripletModel'))
         model.eval()
-    
-    
-    
-    
+        
