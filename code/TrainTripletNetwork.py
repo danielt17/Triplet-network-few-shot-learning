@@ -54,7 +54,7 @@ def LoadBestModel(load_model):
 # %% Main
 
 if __name__ == '__main__':
-    lr = 1e-2; 
+    lr = 1e-4; 
     batch_size = 64;
     epochs = 100;
     gamma = 0.99;
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     plt.figure()
     cur_loss = np.inf
     for epoch in range(epochs):
-        print('Epoch number: ' + str(epoch))
+        print('Epoch number: ' + str(epoch + 1))
         plt.clf()
         dists_plus_temp = 0; dists_minus_temp = 0
         for batch_idx, (anchor, negative, positive) in enumerate(Bar(train_loader)):
@@ -86,6 +86,7 @@ if __name__ == '__main__':
             dists_minus_temp =+ np.mean(dist_minus.detach().cpu().numpy())
         scheduler.step()
         losses.append(loss.item())
+        print('Loss: ' + str(losses[-1]))
         dists_plus.append(dists_plus_temp); dists_minus.append(dists_minus_temp); 
         cur_loss = min(losses[-1],cur_loss)
         if save_model and cur_loss == losses[-1]:
