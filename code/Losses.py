@@ -12,7 +12,7 @@ import torch.nn as nn
 
 # %% Triplet loss
 
-def tripletLoss(anchor,positive,negative,margin = 0.2, p=2):
+def tripletLoss(anchor,positive,negative,margin = 1, p=2):
     triplet_loss = nn.TripletMarginLoss(margin=margin, p=p)
     loss = triplet_loss(anchor, positive, negative)
     return loss

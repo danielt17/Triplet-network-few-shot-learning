@@ -76,9 +76,9 @@ if __name__ == '__main__':
     gamma = 0.99;
     loss_type = 1; # 0 - Triplet loss, 1 - Custom loss paper
     if loss_type == 0:
-        lr = 1e-4; 
+        lr = 1e-2; 
     elif loss_type == 1:
-        lr = 5e-5; 
+        lr = 1e-3;
     save_model = True; load_model = True;
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     train_loader, test_loader = LoadData(batch_size)
