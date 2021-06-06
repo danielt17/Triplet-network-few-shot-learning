@@ -14,6 +14,7 @@ from torchvision import transforms
 import matplotlib.pyplot as plt
 import numpy as np
 from barbar import Bar
+import os
 
 from DataBase import FashionMNIST_t
 from Losses import tripletLoss, CustomLoss
@@ -41,9 +42,9 @@ if __name__ == '__main__':
     lr = 5e-5; 
     batch_size = 64;
     epochs = 100;
-    gamma = 0.9999;
+    gamma = 0.99;
     loss_type = 1; # 0 - Triplet loss, 1 - Custom loss paper
-    save_model = True;
+    save_model = True; load_model = True;
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     train_loader, test_loader = LoadData(batch_size)
     model = TripletNetModel(device)
@@ -51,6 +52,7 @@ if __name__ == '__main__':
     scheduler = ExponentialLR(optimizer, gamma=gamma)
     losses = []; dists_plus = []; dists_minus = []
     plt.figure()
+    cur_loss = np.inf
     for epoch in range(epochs):
         print('Epoch number: ' + str(epoch))
         plt.clf()
@@ -60,7 +62,7 @@ if __name__ == '__main__':
             negative = negative.to(device).requires_grad_()
             positive = positive.to(device).requires_grad_()
             optimizer.zero_grad()
-            # The order is flipped on purpses
+            # The order is flipped on purpse
             dist_plus, dist_minus, embedded_anchor, embedded_positive, embedded_negative = model(anchor,positive,negative)
             loss = lossFunction(dist_plus, dist_minus, embedded_anchor, embedded_positive, embedded_negative,loss_type=loss_type)
             loss.backward()
@@ -70,6 +72,9 @@ if __name__ == '__main__':
         scheduler.step()
         losses.append(loss.item())
         dists_plus.append(dists_plus_temp); dists_minus.append(dists_minus_temp); 
+        cur_loss = min(losses[-1],cur_loss)
+        if save_model and cur_loss == losses[-1]:
+            torch.save(model.state_dict(), '../models/TripletModel' + str(cur_loss))
         plt.subplot(1,3,1)
         plt.semilogy(losses)
         plt.xlabel('Iteartion [#]')
@@ -88,8 +93,18 @@ if __name__ == '__main__':
         plt.suptitle('Iteration number: ' + str(epoch + 1))
         plt.show()
         plt.pause(0.02)
-    if save_model:
-        torch.save(model.state_dict(), '../models/TripletModel')
-        model.load_state_dict(torch.load('../models/TripletModel'))
-        model.eval()
-        
+    # Load best model
+    file_names = []; model_losses = [];
+    for file in os.listdir('..\models'):
+        file_names.append(file)
+        model_losses.append(np.float64(file.split('TripletModel')[1]))
+    model_losses = np.asarray(model_losses)
+    file_num = np.argmin(model_losses)
+    model_best_name = file_names[file_num]
+    if load_model:
+       model.load_state_dict(torch.load('../models/' + model_best_name))
+       model.eval()
+    
+    
+    
+    
