@@ -108,7 +108,8 @@ if __name__ == '__main__':
         scheduler.step()
         losses.append(np.mean(loss_cur))
         test_losses.append(evaluate_test(test_loader,loss_type))
-        print('Loss: ' + str(losses[-1]))
+        print('Train Loss: ' + str(losses[-1]))
+        print('Test Loss: ' + str(test_losses[-1]))
         dists_plus.append(dists_plus_temp); dists_minus.append(dists_minus_temp); 
         cur_loss = min(losses[-1],cur_loss)
         if save_model and cur_loss == losses[-1]:
