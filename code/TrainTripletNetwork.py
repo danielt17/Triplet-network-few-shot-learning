@@ -14,7 +14,6 @@ from torchvision import transforms
 import matplotlib.pyplot as plt
 import numpy as np
 from barbar import Bar
-import os
 
 from DataBase import FashionMNIST_t
 from Losses import tripletLoss, CustomLoss
@@ -39,19 +38,11 @@ def lossFunction(dist_plus, dist_minus, embedded_anchor, embedded_positive, embe
 def LoadBestModel(load_model,loss_type):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = TripletNetModel(device)
-    file_names = []; model_losses = [];
-    for file in os.listdir('../custom_loss/models'):
-        file_names.append(file)
-        model_losses.append(np.float64(file.split('TripletModel')[1]))
-    model_losses = np.asarray(model_losses)
-    file_num = np.argmin(model_losses)
-    model_best_name = file_names[file_num]
-    
     if load_model:
         if loss_type == 0:
-            model.load_state_dict(torch.load('../models/triplet_loss/' + model_best_name))
+            model.load_state_dict(torch.load('../models/triplet_loss/TripletModel'))
         elif loss_type == 1:
-            model.load_state_dict(torch.load('../models/custom_loss/' + model_best_name))
+            model.load_state_dict(torch.load('../models/custom_loss/TripletModel'))
         model.eval()
     return model
 
@@ -78,7 +69,7 @@ if __name__ == '__main__':
     if loss_type == 0:
         lr = 1e-2; 
     elif loss_type == 1:
-        lr = 1e-3;
+        lr = 1e-4;
     save_model = True; load_model = True;
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     train_loader, test_loader = LoadData(batch_size)
@@ -114,9 +105,9 @@ if __name__ == '__main__':
         cur_loss = min(losses[-1],cur_loss)
         if save_model and cur_loss == losses[-1]:
             if loss_type == 0:
-                torch.save(model.state_dict(), '../models/triplet_loss/TripletModel' + str(cur_loss))
+                torch.save(model.state_dict(), '../models/triplet_loss/TripletModel')
             elif loss_type == 1:
-                torch.save(model.state_dict(), '../models/custom_loss/TripletModel' + str(cur_loss))
+                torch.save(model.state_dict(), '../models/custom_loss/TripletModel')
         plt.subplot(2,2,1)
         plt.semilogy(losses)
         plt.xlabel('Iteartion [#]')
