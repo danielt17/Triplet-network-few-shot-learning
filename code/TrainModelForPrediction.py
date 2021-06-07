@@ -70,6 +70,7 @@ if __name__ == '__main__':
     epochs = 5
     error = nn.CrossEntropyLoss()
     lr = 1e-3
+    save_model = False; load_model = False;
     trainset,testset,data_train,data_test,target_train,target_test,classes_dict,data_triplet_train,data_triplet_test,trainTripletFeaturesLoader,testTripletFeaturesLoader = GetStandardAndTripletFeaturesDataSets(device,batch_size)
     model = FashionCNNmodel(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
@@ -95,7 +96,7 @@ if __name__ == '__main__':
         losses_test.append(losses_test_cur)
         accuracy_test.append(accurcay_test_cur)
         print('Training loss: ' + str(losses[-1]) + ' Test loss: ' + str(losses_test[-1]))
-        print('Training accuracy: ' + str(losses[-1]) + ' Test accuracy: ' + str(losses_test[-1]))
+        print('Training accuracy: ' + str(accuracy[-1]) + ' Test accuracy: ' + str(accuracy_test[-1]))
         plt.clf()
         plt.subplot(2,2,1)
         plt.semilogy(losses)
@@ -120,4 +121,9 @@ if __name__ == '__main__':
         plt.suptitle('Epoch number: ' + str(epoch +1))
         plt.show()
         plt.pause(0.02)
+    if save_model:
+        torch.save(model.state_dict(), '../models/modelStandardFashionMnist/modelFashionMnist')
+    if load_model:
+        model = FashionCNNmodel(device)
+        model.load_state_dict(torch.load('../models/modelStandardFashionMnist/modelFashionMnist'))
             
