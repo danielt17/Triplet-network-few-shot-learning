@@ -14,15 +14,16 @@ from TrainTripletNetwork import LoadBestModel
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.manifold import TSNE 
+from barbar import Bar
 
 # %% Functions
 
-def LoadData(device):
+def LoadData(device,batch_size=1):
     data = torchvision.datasets.FashionMNIST('../FashionMnist',download=True,transform=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.4914,),(0.2023,))]))
     train, test = torch.utils.data.random_split(data,[50000,10000])
-    trainset = torch.utils.data.DataLoader(train,batch_size=1,shuffle=False)
+    trainset = torch.utils.data.DataLoader(train,batch_size=batch_size,shuffle=False)
     ind_train = trainset.dataset.indices
-    testset = torch.utils.data.DataLoader(test,batch_size=1,shuffle=False)
+    testset = torch.utils.data.DataLoader(test,batch_size=batch_size,shuffle=False)
     ind_test = testset.dataset.indices
     data_train = data.data.numpy()[ind_train]; data_train = np.reshape(data_train,(data_train.shape[0],28*28))
     data_test = data.data.numpy()[ind_test]; data_test = np.reshape(data_test,(data_test.shape[0],28*28))
@@ -31,9 +32,9 @@ def LoadData(device):
     classes_dict = data.class_to_idx
     return trainset ,testset,data_train,data_test,target_train,target_test,classes_dict             
 
-def ModelPrediction(dataloader,model):
+def ModelPrediction(dataloader,model,device):
     ls = []
-    for batch_idx, data in enumerate(dataloader):
+    for batch_idx, data in enumerate(Bar(dataloader)):
         data_in = data[0]
         data_in = data_in.to(device)
         _,_,output,_,_ = model(data_in,data_in,data_in)
@@ -61,7 +62,7 @@ if __name__ == '__main__':
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = LoadBestModel(True,1)
     trainset ,testset,data_train,data_test,target_train,target_test,classes_dict = LoadData(device)
-    data_model_test = ModelPrediction(testset,model)
+    data_model_test = ModelPrediction(testset,model,device)
     PresentTSNE(data_test,target_test,classes_dict,title='TSNE over standard dataset')
     PresentTSNE(data_model_test,target_test,classes_dict,title='TSNE over model dataset')
     
