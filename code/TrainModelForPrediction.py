@@ -67,62 +67,64 @@ def CalcualteAccuracy(outputs,label):
 if __name__ == '__main__':
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     batch_size = 64
-    epochs = 5
+    epochs = 100
     error = nn.CrossEntropyLoss()
-    lr = 1e-3
-    save_model = False; load_model = False;
+    lr = 1e-5
+    save_model = True; load_model = True;
     trainset,testset,data_train,data_test,target_train,target_test,classes_dict,data_triplet_train,data_triplet_test,trainTripletFeaturesLoader,testTripletFeaturesLoader = GetStandardAndTripletFeaturesDataSets(device,batch_size)
-    model = FashionCNNmodel(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-    losses = []; losses_test = [];
-    accuracy = []; accuracy_test = [];
-    plt.figure()
-    for epoch in range(epochs):
-        print('Epoch number:' + str(epoch +1))
-        loss_cur = []; accuracy_cur = [];
-        for batch_idx, data in enumerate(Bar(trainset)):
-            batch = data[0].to(device).requires_grad_()
-            label = data[1].to(device)
-            optimizer.zero_grad()
-            outputs = model(batch)
-            loss = error(outputs, label)
-            loss.backward()
-            optimizer.step()
-            loss_cur.append(loss.item())
-            accuracy_cur.append(CalcualteAccuracy(outputs,label))
-        losses.append(np.mean(loss_cur))
-        accuracy.append(np.mean(accuracy_cur))
-        losses_test_cur, accurcay_test_cur = evaluate_prediction(testset,error)
-        losses_test.append(losses_test_cur)
-        accuracy_test.append(accurcay_test_cur)
-        print('Training loss: ' + str(losses[-1]) + ' Test loss: ' + str(losses_test[-1]))
-        print('Training accuracy: ' + str(accuracy[-1]) + ' Test accuracy: ' + str(accuracy_test[-1]))
-        plt.clf()
-        plt.subplot(2,2,1)
-        plt.semilogy(losses)
-        plt.xlabel('Iteration [#]')
-        plt.ylabel('Loss')
-        plt.title('Training loss')
-        plt.subplot(2,2,2)
-        plt.plot(accuracy)
-        plt.xlabel('Iteration [#]')
-        plt.ylabel('Accuracy')
-        plt.title('Training accuracy')
-        plt.subplot(2,2,3)
-        plt.semilogy(losses_test)
-        plt.xlabel('Iteration [#]')
-        plt.ylabel('Loss')
-        plt.title('Test loss')
-        plt.subplot(2,2,4)
-        plt.plot(accuracy_test)
-        plt.xlabel('Iteration [#]')
-        plt.ylabel('Accuracy')
-        plt.title('Test accuracy')
-        plt.suptitle('Epoch number: ' + str(epoch +1))
-        plt.show()
-        plt.pause(0.02)
-    if save_model:
-        torch.save(model.state_dict(), '../models/modelStandardFashionMnist/modelFashionMnist')
+    Train_Deep_model = True
+    if Train_Deep_model:
+        model = FashionCNNmodel(device)
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+        losses = []; losses_test = [];
+        accuracy = []; accuracy_test = [];
+        plt.figure()
+        for epoch in range(epochs):
+            print('Epoch number:' + str(epoch +1))
+            loss_cur = []; accuracy_cur = [];
+            for batch_idx, data in enumerate(Bar(trainset)):
+                batch = data[0].to(device).requires_grad_()
+                label = data[1].to(device)
+                optimizer.zero_grad()
+                outputs = model(batch)
+                loss = error(outputs, label)
+                loss.backward()
+                optimizer.step()
+                loss_cur.append(loss.item())
+                accuracy_cur.append(CalcualteAccuracy(outputs,label))
+            losses.append(np.mean(loss_cur))
+            accuracy.append(np.mean(accuracy_cur))
+            losses_test_cur, accurcay_test_cur = evaluate_prediction(testset,error)
+            losses_test.append(losses_test_cur)
+            accuracy_test.append(accurcay_test_cur)
+            print('Training loss: ' + str(losses[-1]) + ' Test loss: ' + str(losses_test[-1]))
+            print('Training accuracy: ' + str(accuracy[-1]) + ' Test accuracy: ' + str(accuracy_test[-1]))
+            plt.clf()
+            plt.subplot(2,2,1)
+            plt.semilogy(losses)
+            plt.xlabel('Iteration [#]')
+            plt.ylabel('Loss')
+            plt.title('Training loss')
+            plt.subplot(2,2,2)
+            plt.plot(accuracy)
+            plt.xlabel('Iteration [#]')
+            plt.ylabel('Accuracy')
+            plt.title('Training accuracy')
+            plt.subplot(2,2,3)
+            plt.semilogy(losses_test)
+            plt.xlabel('Iteration [#]')
+            plt.ylabel('Loss')
+            plt.title('Test loss')
+            plt.subplot(2,2,4)
+            plt.plot(accuracy_test)
+            plt.xlabel('Iteration [#]')
+            plt.ylabel('Accuracy')
+            plt.title('Test accuracy')
+            plt.suptitle('Epoch number: ' + str(epoch +1))
+            plt.show()
+            plt.pause(0.02)
+        if save_model:
+            torch.save(model.state_dict(), '../models/modelStandardFashionMnist/modelFashionMnist')
     if load_model:
         model = FashionCNNmodel(device)
         model.load_state_dict(torch.load('../models/modelStandardFashionMnist/modelFashionMnist'))
