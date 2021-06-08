@@ -13,6 +13,8 @@ import torch.nn as nn
 import numpy as np
 from barbar import Bar
 import matplotlib.pyplot as plt
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
 
 from VisualizeTSNE import LoadData, ModelPrediction
 from TrainTripletNetwork import LoadBestModel
@@ -67,12 +69,13 @@ def CalcualteAccuracy(outputs,label):
 if __name__ == '__main__':
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     batch_size = 64
-    epochs = 100
+    epochs = 50
     error = nn.CrossEntropyLoss()
     lr = 1e-5
-    save_model = True; load_model = True;
+    Train_Deep_model = False
+    save_model = False;
+    load_model = True;
     trainset,testset,data_train,data_test,target_train,target_test,classes_dict,data_triplet_train,data_triplet_test,trainTripletFeaturesLoader,testTripletFeaturesLoader = GetStandardAndTripletFeaturesDataSets(device,batch_size)
-    Train_Deep_model = True
     if Train_Deep_model:
         model = FashionCNNmodel(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=lr)
@@ -128,4 +131,17 @@ if __name__ == '__main__':
     if load_model:
         model = FashionCNNmodel(device)
         model.load_state_dict(torch.load('../models/modelStandardFashionMnist/modelFashionMnist'))
+    print('Prediction: ')
+    acc_model = evaluate_prediction(testset,error)[1]
+    svm = SVC(kernel='rbf')
+    svm.fit(data_triplet_train,target_train)
+    acc_svm = svm.score(data_triplet_test,target_test) * 100
+    KNN = KNeighborsClassifier(n_neighbors=100)
+    KNN.fit(data_triplet_train,target_train)
+    acc_knn = KNN.score(data_triplet_test,target_test) * 100
+    print('DNN model accuracy: ' + str(acc_model)[:5] + '%')
+    print('Linear SVM accuracy: ' + str(acc_svm)[:5] + '%')
+    print('KNN accuracy: ' + str(acc_knn)[:5] + '%')
+    
+    
             
