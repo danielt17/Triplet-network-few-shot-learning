@@ -62,14 +62,14 @@ def evaluate_test(test_loader,loss_type):
 # %% Main
 
 if __name__ == '__main__':
-    epochs = 20;
+    epochs = 500;
     batch_size = 64;
     gamma = 0.99;
     loss_type = 1; # 0 - Triplet loss, 1 - Custom loss paper
     if loss_type == 0:
         lr = 1e-2; 
     elif loss_type == 1:
-        lr = 1e-4;
+        lr = 1e-6;
     save_model = True; load_model = True;
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     train_loader, test_loader = LoadData(batch_size)
@@ -102,8 +102,8 @@ if __name__ == '__main__':
         print('Train Loss: ' + str(losses[-1]))
         print('Test Loss: ' + str(test_losses[-1]))
         dists_plus.append(dists_plus_temp); dists_minus.append(dists_minus_temp); 
-        cur_loss = min(losses[-1],cur_loss)
-        if save_model and cur_loss == losses[-1]:
+        cur_loss = min(test_losses[-1],cur_loss)
+        if save_model and cur_loss == test_losses[-1]:
             if loss_type == 0:
                 torch.save(model.state_dict(), '../models/triplet_loss/TripletModel')
             elif loss_type == 1:

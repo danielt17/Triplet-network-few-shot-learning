@@ -12,6 +12,7 @@ import torchvision
 from torchvision import transforms
 from TrainTripletNetwork import LoadBestModel
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from sklearn.manifold import TSNE 
 from barbar import Bar
@@ -45,6 +46,7 @@ def ModelPrediction(dataloader,model,device):
 
 def PresentTSNE(dataset_numpy,targetset_numpy,classes_dict,title):
     data_test_tsne = TSNE(n_components=2).fit_transform(dataset_numpy)
+    data_test_tsne_3d = TSNE(n_components=3).fit_transform(dataset_numpy)
     plt.figure()
     colors = 'r', 'g', 'b', 'c', 'm', 'y', 'k', 'w', 'orange', 'purple'
     target_ids = range(len(list(classes_dict.values())))
@@ -53,6 +55,16 @@ def PresentTSNE(dataset_numpy,targetset_numpy,classes_dict,title):
     plt.legend()
     plt.xlabel('First component')
     plt.ylabel('Second component')
+    plt.title(title)
+    plt.show()
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+    for i,c, label in zip(target_ids, colors, list(classes_dict.keys())):
+        ax.scatter(data_test_tsne_3d[targetset_numpy==i,0],data_test_tsne_3d[targetset_numpy==i,1],data_test_tsne_3d[targetset_numpy==i,2],c=c,label = label)
+    plt.legend()
+    ax.set_xlabel('First component')
+    ax.set_ylabel('Second component')
+    ax.set_zlabel('Third component')
     plt.title(title)
     plt.show()
     
