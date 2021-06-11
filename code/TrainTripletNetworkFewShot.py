@@ -60,8 +60,8 @@ if __name__ == '__main__':
     TripletTestSize = np.int64(60000*0.2)
     k_way=2
     n_shot=50
-    train_model = True; FewShotEvaluation = False; 
-    save_model = True; load_model = True;
+    train_model = False; FewShotEvaluation = True; 
+    save_model = False; load_model = True;
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     Train_X,Train_Y,Test_Y,Test_Y,SupportSet_X,SupportSet_Y = LoadDataFMnist(labels_out = labels_out)
     Train_X_triplets, Train_Y_triplets, Train_Index_triplets = CreateTriplets(Train_X,Train_Y,TripletSetSize=TripletSetSize)
@@ -69,10 +69,10 @@ if __name__ == '__main__':
     model = TripletNetModel(device)
     optimizer = Adam(model.parameters(),lr = lr)
     scheduler = ExponentialLR(optimizer, gamma=gamma)
-    losses = []; test_losses = []; dists_plus = []; dists_minus = []
-    plt.figure()
-    cur_loss = np.inf
     if train_model:
+        losses = []; test_losses = []; dists_plus = []; dists_minus = []
+        plt.figure()
+        cur_loss = np.inf
         for epoch in range(epochs):
             print('Epoch number: ' + str(epoch + 1))
             plt.clf()

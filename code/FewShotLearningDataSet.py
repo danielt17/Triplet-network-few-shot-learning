@@ -50,7 +50,7 @@ def CreateTriplets(X,Y,TripletSetSize=60000):
         negative_array[ind] = X[negative_ind:negative_ind+1]
         Y_triplets.append((anchor_label,anchor_label,negative_label))
         Index_triplets.append((anchor_ind,positive_ind,negative_ind))
-    X_triplets = [torch.from_numpy(anchor_array),torch.from_numpy(positive_array),torch.from_numpy(negative_array)]
+    X_triplets = [torch.from_numpy(np.float32(anchor_array)),torch.from_numpy(np.float32(positive_array)),torch.from_numpy(np.float32(negative_array))]
     return X_triplets, Y_triplets, Index_triplets 
     
     
@@ -74,7 +74,7 @@ def SupportSetAndQuery(SupportSet_X,SupportSet_Y,labels_out,k_way=2,n_shot=3):
     SupportSet = list(SupportSet)
     for i in range(len(SupportSet)):
         SupportSet[i] = torch.from_numpy(SupportSet[i])
-    return torch.from_numpy(Query),QueryLabel,classes,SupportSet
+    return torch.from_numpy(np.float32(Query)),QueryLabel,classes,SupportSet
 
 # %% Main
 
