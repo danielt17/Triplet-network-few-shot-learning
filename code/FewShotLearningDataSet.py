@@ -12,7 +12,6 @@ import torchvision
 from torchvision import transforms
 import numpy as np 
 
-
 # %% Functions
 
 def LoadDataFMnist(labels_out = [7,8,9]):
@@ -56,25 +55,26 @@ def CreateTriplets(X,Y,TripletSetSize=60000):
     
     
 def SupportSetAndQuery(SupportSet_X,SupportSet_Y,labels_out,k_way=2,n_shot=3):
+    labels_out = np.asarray(labels_out)
     QueryLabel = np.random.choice(labels_out)
     QueryInd = np.random.choice(np.where(SupportSet_Y==QueryLabel)[0])
     Query = SupportSet_X[QueryInd:QueryInd+1]
-    # Continue building support set
-    return Query,QueryLabel
-
-
-# Example: 3 way 1 shot
-    # Few shot learning
-    # Traning set with 5 labels (lets say first five labels)
-    # the test will be of 5(k-way k classes in test k = 5) labels (support set)
-    # shots number of samples of 
-    # the same label in the support set (n shots = number of samples from class not seen)
-    # need 
-    # Query outside the support set
-    # Training set
-    # Test set for training set
-    # Support set
-    # Query set
+    classes = []
+    otherLabels = np.where(labels_out!=QueryLabel)[0]
+    while len(classes) < (k_way - 1):
+        labelNew = np.random.choice(labels_out[otherLabels])
+        if labelNew not in classes:
+            classes.append(labelNew)
+    classes.append(QueryLabel)
+    SupportSet = np.zeros((len(classes),n_shot,1,28,28))
+    for ind,label in enumerate(classes):
+        cur_label_examples = np.where(SupportSet_Y==label)[0]
+        inds_cur_label = np.random.choice(cur_label_examples, size=n_shot, replace=False)
+        SupportSet[ind] = SupportSet_X[inds_cur_label]
+    SupportSet = list(SupportSet)
+    for i in range(len(SupportSet)):
+        SupportSet[i] = torch.from_numpy(SupportSet[i])
+    return torch.from_numpy(Query),QueryLabel,classes,SupportSet
 
 # %% Main
 
@@ -83,8 +83,20 @@ if __name__ == '__main__':
     TripletSetSize = 60000
     TripletTestSize = np.int64(60000*0.2)
     k_way=2
-    n_shot=3
+    n_shot=50
     Train_X,Train_Y,Test_Y,Test_Y,SupportSet_X,SupportSet_Y = LoadDataFMnist(labels_out = labels_out)
     Train_X_triplets, Train_Y_triplets, Train_Index_triplets = CreateTriplets(Train_X,Train_Y,TripletSetSize=TripletSetSize)
     Test_X_triplets, Test_Y_triplets, Test_Index_triplets = CreateTriplets(Train_X,Train_Y,TripletSetSize=TripletTestSize)
-    Query,QueryLabel = SupportSetAndQuery(SupportSet_X,SupportSet_Y,labels_out,k_way=k_way,n_shot=n_shot)
+    Query,QueryLabel,classes,SupportSet = SupportSetAndQuery(SupportSet_X,SupportSet_Y,labels_out,k_way=k_way,n_shot=n_shot)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
