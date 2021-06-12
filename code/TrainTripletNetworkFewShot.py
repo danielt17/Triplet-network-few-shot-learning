@@ -95,7 +95,7 @@ if __name__ == '__main__':
     TripletTestSize = np.int64(60000*0.2)
     k_way=3
     n_shot=50
-    ExpNum = 100
+    ExpNum = 500
     train_model = False; FewShotEvaluation = True; 
     save_model = False; load_model = True;
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -169,9 +169,13 @@ if __name__ == '__main__':
         accN,stdN = CalculateNshotsAccuray(n_shot,ExpNum,SupportSet_X,SupportSet_Y,labels_out,k_way,device)
         n_shot_temp = 5
         accK,stdK = CalculateKWaysAccuray(n_shot_temp,k_way,ExpNum,SupportSet_X,SupportSet_Y,labels_out,device)
+        savgolFilterOn = True
         plt.figure()
         plt.subplot(1,2,1)
-        plt.plot(np.linspace(1,n_shot,n_shot),savgol_filter(accN,7,1))
+        if savgolFilterOn:
+            plt.plot(np.linspace(1,n_shot,n_shot),savgol_filter(accN,7,1))
+        else:
+            plt.plot(np.linspace(1,n_shot,n_shot),accN)
         plt.xlabel('N-shots [#]')
         plt.ylabel('Accuracy')
         plt.subplot(1,2,2)
