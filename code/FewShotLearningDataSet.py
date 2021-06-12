@@ -59,6 +59,7 @@ def SupportSetAndQuery(SupportSet_X,SupportSet_Y,labels_out,k_way=2,n_shot=3):
     QueryLabel = np.random.choice(labels_out)
     QueryInd = np.random.choice(np.where(SupportSet_Y==QueryLabel)[0])
     Query = SupportSet_X[QueryInd:QueryInd+1]
+    Query = np.repeat(Query,n_shot,axis = 0)
     classes = []
     otherLabels = np.where(labels_out!=QueryLabel)[0]
     while len(classes) < (k_way - 1):
@@ -73,7 +74,7 @@ def SupportSetAndQuery(SupportSet_X,SupportSet_Y,labels_out,k_way=2,n_shot=3):
         SupportSet[ind] = SupportSet_X[inds_cur_label]
     SupportSet = list(SupportSet)
     for i in range(len(SupportSet)):
-        SupportSet[i] = torch.from_numpy(SupportSet[i])
+        SupportSet[i] = torch.from_numpy(np.float32(SupportSet[i]))
     return torch.from_numpy(np.float32(Query)),QueryLabel,classes,SupportSet
 
 # %% Main

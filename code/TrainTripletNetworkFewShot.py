@@ -21,6 +21,7 @@ from torch.optim.lr_scheduler import ExponentialLR
 import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
+from scipy.signal import savgol_filter
 
 from FewShotLearningDataSet import LoadDataFMnist,CreateTriplets,SupportSetAndQuery
 from Losses import CustomLoss
@@ -48,6 +49,40 @@ def LoadBestModel():
     model.eval()
     return model
 
+def CalculateAccuracyFewShot(ExpNum,SupportSet_X,SupportSet_Y,labels_out,k_way,n_shot,device):
+    model.eval()
+    acc = []
+    for i in range(ExpNum):
+        Query,QueryLabel,classes,SupportSet = SupportSetAndQuery(SupportSet_X,SupportSet_Y,labels_out,k_way=k_way,n_shot=n_shot)
+        cur_preds = []
+        for ls in SupportSet:
+            cur_preds.append(model(Query.to(device),ls.to(device),ls.to(device))[0].detach().cpu().numpy())
+        cur_preds = np.array(cur_preds)
+        cur_preds = np.sum(cur_preds,axis=1)
+        pred_label = np.argmin(cur_preds)
+        acc.append(100*(pred_label==(len(SupportSet)-1)))
+    std = np.std(acc)
+    acc = np.mean(acc)
+    return acc,std
+
+def CalculateNshotsAccuray(n_shot_num,ExpNum,SupportSet_X,SupportSet_Y,labels_out,k_way,device):
+    acc = []
+    std = []
+    for n_shots in tqdm(range(n_shot_num)):
+        acc_temp,std_temp = CalculateAccuracyFewShot(ExpNum,SupportSet_X,SupportSet_Y,labels_out,k_way,n_shot = n_shots+1,device=device)
+        std.append(std_temp)
+        acc.append(acc_temp)
+    return acc,std
+    
+def CalculateKWaysAccuray(n_shot,k_way_num,ExpNum,SupportSet_X,SupportSet_Y,labels_out,device):
+    acc = []
+    std = []
+    for k_ways in tqdm(range(k_way_num)):
+        acc_temp,std_temp = CalculateAccuracyFewShot(ExpNum,SupportSet_X,SupportSet_Y,labels_out,k_way=k_ways+1,n_shot = n_shot,device=device)
+        std.append(std_temp)
+        acc.append(acc_temp)
+    return acc,std
+
 # %% Main
 
 if __name__ == '__main__':
@@ -58,8 +93,9 @@ if __name__ == '__main__':
     labels_out = [7,8,9]
     TripletSetSize = 60000
     TripletTestSize = np.int64(60000*0.2)
-    k_way=2
+    k_way=3
     n_shot=50
+    ExpNum = 100
     train_model = False; FewShotEvaluation = True; 
     save_model = False; load_model = True;
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -87,15 +123,20 @@ if __name__ == '__main__':
                 loss = CustomLoss(dist_plus,dist_minus)
                 loss.backward()
                 optimizer.step()
-                dists_plus_temp =+ np.mean(dist_plus.detach().cpu().numpy())
-                dists_minus_temp =+ np.mean(dist_minus.detach().cpu().numpy())
+                dists_plus_temp_temp = dist_plus.detach().cpu().numpy()
+                dists_minus_temp_temp = dist_minus.detach().cpu().numpy()
+                norm = np.exp(dists_plus_temp_temp) + np.exp(dists_minus_temp_temp)
+                dists_plus_temp =+ np.mean(np.exp(dists_plus_temp_temp)/norm)
+                dists_minus_temp =+ np.mean(np.exp(dists_minus_temp_temp)/norm)
                 loss_cur.append(loss.item())
             scheduler.step()
             losses.append(np.mean(loss_cur))
             test_losses.append(evaluate_test(Test_X_triplets,TripletTestSize,batch_size))
+            dists_plus.append(dists_plus_temp); dists_minus.append(dists_minus_temp); 
             print('Train Loss: ' + str(losses[-1]))
             print('Test Loss: ' + str(test_losses[-1]))
-            dists_plus.append(dists_plus_temp); dists_minus.append(dists_minus_temp); 
+            print('Similarity: ' + str(dists_plus[-1]))
+            print('Disimilarity: ' + str(dists_minus[-1]))
             cur_loss = min(test_losses[-1],cur_loss)
             if save_model and cur_loss == test_losses[-1]:
                 torch.save(model.state_dict(), '../models/FewShotLearningTripletNetwork/TripletModel')
@@ -125,6 +166,17 @@ if __name__ == '__main__':
     if load_model:
         model = LoadBestModel()
     if FewShotEvaluation:
-        Query,QueryLabel,classes,SupportSet = SupportSetAndQuery(SupportSet_X,SupportSet_Y,labels_out,k_way=k_way,n_shot=n_shot)
-    
+        accN,stdN = CalculateNshotsAccuray(n_shot,ExpNum,SupportSet_X,SupportSet_Y,labels_out,k_way,device)
+        n_shot_temp = 5
+        accK,stdK = CalculateKWaysAccuray(n_shot_temp,k_way,ExpNum,SupportSet_X,SupportSet_Y,labels_out,device)
+        plt.figure()
+        plt.subplot(1,2,1)
+        plt.plot(np.linspace(1,n_shot,n_shot),savgol_filter(accN,7,1))
+        plt.xlabel('N-shots [#]')
+        plt.ylabel('Accuracy')
+        plt.subplot(1,2,2)
+        plt.plot(np.linspace(1,len(accK),len(accK)),accK)
+        plt.xlabel('K-ways [#]')
+        plt.ylabel('Accuracy')
+        
     
