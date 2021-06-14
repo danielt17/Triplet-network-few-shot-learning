@@ -18,6 +18,7 @@ Created on Sat Jun  5 15:08:36 2021
 import torch
 from torch.optim import Adam
 from torch.optim.lr_scheduler import ExponentialLR
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
@@ -26,6 +27,13 @@ from scipy.signal import savgol_filter
 from FewShotLearningDataSet import LoadDataFMnist,CreateTriplets,SupportSetAndQuery
 from Losses import CustomLoss
 from TripletNetwork import TripletNetModel
+
+# %% Setup plot
+
+font = {'family' : 'normal',
+        'size'   : 14}
+
+matplotlib.rc('font', **font)
 
 # %% Functions
 
@@ -90,12 +98,12 @@ if __name__ == '__main__':
     batch_size = 64;
     gamma = 0.99;
     lr = 1e-6;
-    labels_out = [7,8,9]
+    labels_out = [6,7,8,9]
     TripletSetSize = 60000
     TripletTestSize = np.int64(60000*0.2)
-    k_way=3
+    k_way=4
     n_shot=50
-    ExpNum = 500
+    ExpNum = 1000
     train_model = False; FewShotEvaluation = True; 
     save_model = False; load_model = True;
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -141,22 +149,22 @@ if __name__ == '__main__':
             if save_model and cur_loss == test_losses[-1]:
                 torch.save(model.state_dict(), '../models/FewShotLearningTripletNetwork/TripletModel')
             plt.subplot(2,2,1)
-            plt.semilogy(losses)
+            plt.semilogy(np.linspace(1,epoch+1,epoch+1),losses)
             plt.xlabel('Iteartion [#]')
             plt.ylabel('Loss')
             plt.title('Training loss')
             plt.subplot(2,2,2)
-            plt.semilogy(test_losses)
+            plt.semilogy(np.linspace(1,epoch+1,epoch+1),test_losses)
             plt.xlabel('Iteartion [#]')
             plt.ylabel('Loss')
             plt.title('Test loss')
             plt.subplot(2,2,3)
-            plt.plot(dists_plus)
+            plt.plot(np.linspace(1,epoch+1,epoch+1),dists_plus)
             plt.xlabel('Iteartion [#]')
             plt.ylabel('MSE')
             plt.title('Similarity')
             plt.subplot(2,2,4)
-            plt.plot(dists_minus)
+            plt.plot(np.linspace(1,epoch+1,epoch+1),dists_minus)
             plt.xlabel('Iteartion [#]')
             plt.ylabel('MSE')
             plt.title('Disimilarity')
@@ -166,7 +174,8 @@ if __name__ == '__main__':
     if load_model:
         model = LoadBestModel()
     if FewShotEvaluation:
-        accN,stdN = CalculateNshotsAccuray(n_shot,ExpNum,SupportSet_X,SupportSet_Y,labels_out,k_way,device)
+        k_way_temp = 3
+        accN,stdN = CalculateNshotsAccuray(n_shot,ExpNum,SupportSet_X,SupportSet_Y,labels_out,k_way_temp,device)
         n_shot_temp = 5
         accK,stdK = CalculateKWaysAccuray(n_shot_temp,k_way,ExpNum,SupportSet_X,SupportSet_Y,labels_out,device)
         savgolFilterOn = True
@@ -177,10 +186,13 @@ if __name__ == '__main__':
         else:
             plt.plot(np.linspace(1,n_shot,n_shot),accN)
         plt.xlabel('N-shots [#]')
-        plt.ylabel('Accuracy')
+        plt.ylabel('Accuracy [%]')
+        plt.title('Accuracy as a function of the number of shots, $k_{ways}$ = ' + str(k_way_temp))
         plt.subplot(1,2,2)
         plt.plot(np.linspace(1,len(accK),len(accK)),accK)
         plt.xlabel('K-ways [#]')
-        plt.ylabel('Accuracy')
+        plt.ylabel('Accuracy [%]')
+        plt.title('Accuracy as a function of k number of classes in support set, $n_{shots}$ = ' + str(n_shot_temp))
+        plt.suptitle('Results averaged over ' + str(ExpNum) + ' experiments')
         
     

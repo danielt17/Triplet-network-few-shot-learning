@@ -17,6 +17,13 @@ import numpy as np
 from sklearn.manifold import TSNE 
 from barbar import Bar
 
+# %% Setup plot
+
+font = {'family' : 'normal',
+        'size'   : 14}
+
+matplotlib.rc('font', **font)
+
 # %% Functions
 
 def LoadData(device,batch_size=1):

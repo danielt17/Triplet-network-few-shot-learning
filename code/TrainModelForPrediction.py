@@ -20,6 +20,12 @@ from VisualizeTSNE import LoadData, ModelPrediction
 from TrainTripletNetwork import LoadBestModel
 from PredictionNetworks import FashionCNNmodel
 
+# %% Setup plot
+
+font = {'family' : 'normal',
+        'size'   : 14}
+
+matplotlib.rc('font', **font)
 
 # %% Create data set
 
