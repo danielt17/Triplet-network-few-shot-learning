@@ -1,4 +1,4 @@
-# Triplet network for few shot learning
+# Triplet-network-for-few-shot-learning
 
 <h1 align="center">
   <br>
@@ -21,7 +21,7 @@ Triplet network for few shot learning
 </h4>
 
 
-- [ee046211-deep-learning](#ee046211-deep-learning)
+- [Triplet-network-for-few-shot-learning](#Triplet-network-for-few-shot-learning)
   * [Agenda](#agenda)
   * [Running The Notebooks](#running-the-notebooks)
     + [Running Online](#running-online)
