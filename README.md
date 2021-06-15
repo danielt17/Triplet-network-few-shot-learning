@@ -11,7 +11,7 @@ Triplet network for few shot learning
     <a href="https://github.com/GonenWeiss">Gonen Wiess</a> 
   </p>
 
-* Animation by <a href="https://omoindrot.github.io/triplet-loss">Olivier Moindrot</a>.
+* Picture by <a href="https://omoindrot.github.io/triplet-loss">Olivier Moindrot</a>.
 
 <h4 align="center">
     <a href="https://colab.research.google.com/github/taldatech/ee046211-deep-learning"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
