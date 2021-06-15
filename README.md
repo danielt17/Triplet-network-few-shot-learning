@@ -35,10 +35,7 @@ Triplet network for few shot learning
 ### Running Locally
 
 Press "Download ZIP" under the green button `Clone or download` or use `git` to clone the repository using the 
-following command: `git clone https://github.com/taldatech/ee046211-deep-learning.git` (in cmd/PowerShell in Windows or in the Terminal in Linux/Mac)
-
-Open the folder in Jupyter Notebook (it is recommended to use Anaconda). Installation instructions can be found in `Setting Up The Working Environment.pdf`.
-
+following command: `git clone https://github.com/danielt17/Triplet-loss-few-shot-learning.git` (in cmd/PowerShell in Windows or in the Terminal in Linux/Mac)
 
 ## Installation Instructions
 
