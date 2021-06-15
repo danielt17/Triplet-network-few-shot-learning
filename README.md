@@ -7,8 +7,8 @@ Triplet network for few shot learning
   <img src="https://omoindrot.github.io/assets/triplet_loss/triplet_loss.png" height="200">
 </h1>
   <p align="center">
-    <a href="https://taldatech.github.io">Daniel Teitelman</a> •
-    <a href="https://github.com/royg27">Gonen Wiess</a> •
+    <a href="https://github.com/danielt17">Daniel Teitelman</a> •
+    <a href="https://github.com/GonenWeiss">Gonen Wiess</a> •
   </p>
 
 Jupyter Notebook tutorials for the Technion's EE 046211 course "Deep Learning"
