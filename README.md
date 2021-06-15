@@ -37,7 +37,7 @@ This project was done as the final project in the course deep learning (046211) 
 ### Running Locally
 
 Press "Download ZIP" under the green button `Clone or download` or use `git` to clone the repository using the 
-following command: `git clone https://github.com/danielt17/Triplet-loss-few-shot-learning.git` (in cmd/PowerShell in Windows or in the Terminal in Linux/Mac)
+following command: `git clone https://github.com/danielt17/Triplet-network-few-shot-learning.git` (in cmd/PowerShell in Windows or in the Terminal in Linux/Mac)
 
 ## Installation Instructions
 
