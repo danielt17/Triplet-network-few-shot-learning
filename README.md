@@ -19,10 +19,11 @@ Triplet network for few shot learning
 - [Triplet-network-for-few-shot-learning](#Triplet-network-for-few-shot-learning)
   * [Agenda](#agenda)
   * [Installation Instructions](#installation-instructions)
-    + [Libraries to Install](#libraries-to-install)
 
 
 ## Agenda
+
+This project was done as the final project in the course deep learning (046211) at the technion. Our project focused on reimplmentating the paper "Deep Metric Learning Using Triplet Network" by Elad Hoffer, et.al and testing it on a another dataset named: <a href="https://github.com/zalandoresearch/fashion-mnist">Fasion Mnist</a>. Afterwards we used the architecture in the setting of few shot learning and evaluted its performance.
 
 |Folders       | Content |
 |----------------|---------|
