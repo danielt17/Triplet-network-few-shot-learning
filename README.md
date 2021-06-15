@@ -13,11 +13,6 @@ Triplet network for few shot learning
 
 * Picture by <a href="https://omoindrot.github.io/triplet-loss">Olivier Moindrot</a>.
 
-<h4 align="center">
-    <a href="https://colab.research.google.com/github/taldatech/ee046211-deep-learning"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
-    <a href="https://nbviewer.jupyter.org/github/taldatech/ee046211-deep-learning/tree/main/"><img src="https://jupyter.org/assets/main-logo.svg" alt="Open In NBViewer"/></a>
-    <a href="https://mybinder.org/v2/gh/taldatech/ee046211-deep-learning/main"><img src="https://mybinder.org/badge_logo.svg" alt="Open In Binder"/></a>
-
 </h4>
 
 
