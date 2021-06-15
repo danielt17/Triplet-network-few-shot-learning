@@ -1,4 +1,4 @@
-# ee046211-deep-learning
+# Triplet network for few shot learning
 
 <h1 align="center">
   <br>
