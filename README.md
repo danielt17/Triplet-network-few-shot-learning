@@ -42,29 +42,6 @@ following command: `git clone https://github.com/danielt17/Triplet-loss-few-shot
 For the complete guide, with step-by-step images, please consult `Setting Up The Working Environment.pdf`
 
 1. Get Anaconda with Python 3, follow the instructions according to your OS (Windows/Mac/Linux) at: https://www.anaconda.com/products/individual
-2. Install the basic packages using the provided `environment.yml` file by running: `conda env create -f environment.yml` which will create a new conda environment named `deep_learn`. If you did this, you will only need to install PyTorch, see the table below.
-3. Alternatively, you can create a new environment for the course and install packages from scratch:
-In Windows open `Anaconda Prompt` from the start menu, in Mac/Linux open the terminal and run `conda create --name deep_learn`. Full guide at https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands
-4. To activate the environment, open the terminal (or `Anaconda Prompt` in Windows) and run `conda activate deep_learn`
-5. Install the required libraries according to the table below (to search for a specific library and the corresponding command you can also look at https://anaconda.org/)
+2. Install the basic packages using the provided `environment.yml` file by running: `conda env create -f environment.yml` which will create a new conda environment named `TechnionPytorch`.
+3. To activate the environment, open the terminal (or `Anaconda Prompt` in Windows) and run `conda activate TechnionPytorch`
 
-### Libraries to Install
-
-|Library         | Command to Run |
-|----------------|---------|
-|`Jupyter Notebook`|  `conda install -c conda-forge notebook`|
-|`numpy`|  `conda install -c conda-forge numpy`|
-|`matplotlib`|  `conda install -c conda-forge matplotlib`|
-|`pandas`|  `conda install -c conda-forge pandas`|
-|`scipy`| `conda install -c anaconda scipy `|
-|`scikit-learn`|  `conda install -c conda-forge scikit-learn`|
-|`seaborn`|  `conda install -c conda-forge seaborn`|
-|`tqdm`| `conda install -c conda-forge tqdm`|
-|`opencv`| `conda install -c conda-forge opencv`|
-|`optuna`| `pip install optuna`|
-|`pytorch` (cpu)| `conda install pytorch torchvision torchaudio cpuonly -c pytorch` |
-|`pytorch` (gpu)| `conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch` |
-|`torchtext`| `conda install -c pytorch torchtext`|
-
-
-5. To open the notebooks, open Ananconda Navigator or run `jupyter notebook` in the terminal (or `Anaconda Prompt` in Windows) while the `deep_learn` environment is activated.
