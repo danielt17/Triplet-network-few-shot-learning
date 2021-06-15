@@ -2,9 +2,9 @@
 
 <h1 align="center">
   <br>
-Technion EE 046211 - Deep Learning
+Triplet network for few shot learning
   <br>
-  <img src="https://raw.githubusercontent.com/taldatech/ee046211-deep-learning/main/assets/nn_gumgum.gif" height="200">
+  <img src="https://omoindrot.github.io/assets/triplet_loss/triplet_loss.png" height="200">
 </h1>
   <p align="center">
     <a href="https://taldatech.github.io">Tal Daniel</a> •
