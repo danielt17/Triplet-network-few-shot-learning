@@ -8,10 +8,10 @@ Created on Mon Jun  7 19:05:37 2021
 # %% Imports
 
 import torch
-from torch.utils.data import TensorDataset, DataLoader
 import torch.nn as nn
 import numpy as np
 from barbar import Bar
+import matplotlib
 import matplotlib.pyplot as plt
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
@@ -29,27 +29,38 @@ matplotlib.rc('font', **font)
 
 # %% Create data set
 
-def TripletFeaturesDataSet(data_triplet_train,target_train,data_triplet_test,target_test,batch_size):
-    x_train = list(data_triplet_train); y_train = list(target_train)
-    x_test = list(data_triplet_test); y_test = list(target_test)
-    x_train = torch.Tensor(x_train); y_train = torch.Tensor(y_train)
-    x_test = torch.Tensor(x_test); y_test = torch.Tensor(y_test)
-    trainTripletFeaturesSet = TensorDataset(x_train,y_train)
-    testTripletFeaturesSet = TensorDataset(x_test,y_test)
-    trainTripletFeaturesLoader = DataLoader(trainTripletFeaturesSet,batch_size = batch_size)
-    testTripletFeaturesLoader = DataLoader(testTripletFeaturesSet,batch_size = batch_size)
-    return trainTripletFeaturesLoader,testTripletFeaturesLoader
-
 def GetStandardAndTripletFeaturesDataSets(device,batch_size):
+    '''
+    Inputs:
+        data_triplet_train: cpu or cuda enbaled gpu
+        batch_size: required batch size
+    Returns: 
+        trainset: train dataloader
+        testset: test dataloader
+        data_train: train numpy array
+        data_test: test numpy array
+        target_train: train labels numpy array
+        target_test: test labels numpy array
+        classes_dict: dictionary of label - class
+        data_triplet_train: train, triplet feature vector numpy array
+        data_triplet_test: test, triplet feature vector numpy array
+    '''
     modelTriplet = LoadBestModel(True,1)
     trainset ,testset,data_train,data_test,target_train,target_test,classes_dict = LoadData(device,batch_size = 1)
     data_triplet_train = ModelPrediction(trainset,modelTriplet,device)
     data_triplet_test = ModelPrediction(testset,modelTriplet,device)
-    trainTripletFeaturesLoader,testTripletFeaturesLoader = TripletFeaturesDataSet(data_triplet_train,target_train,data_triplet_test,target_test,batch_size)
     trainset ,testset,_,_,_,_,_ = LoadData(device,batch_size = batch_size)
-    return trainset,testset,data_train,data_test,target_train,target_test,classes_dict,data_triplet_train,data_triplet_test,trainTripletFeaturesLoader,testTripletFeaturesLoader
+    return trainset,testset,data_train,data_test,target_train,target_test,classes_dict,data_triplet_train,data_triplet_test
 
 def evaluate_prediction(test,error):
+    '''
+    Inputs:
+        test: test dataloader
+        error: loss object
+    Returns: 
+        losses: loss current epoch on test set
+        accurcay: accuracy current epoch on test set
+    '''
     model.eval()
     losses = []
     accurcay = []
@@ -65,6 +76,13 @@ def evaluate_prediction(test,error):
     return losses,accurcay
 
 def CalcualteAccuracy(outputs,label):
+    '''
+    Inputs:
+        outputs: CNN output probabilites
+        label: ground truth label
+    Returns: 
+        accuracy: accuracy
+    '''
     pred = np.argmax(outputs.detach().cpu().numpy(),axis =1)
     labels = label.detach().cpu().numpy()
     accuracy = 100 * np.sum(pred==labels)/len(pred)
@@ -73,6 +91,7 @@ def CalcualteAccuracy(outputs,label):
 # %% Main
 
 if __name__ == '__main__':
+    # Hyperparameters
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     batch_size = 64
     epochs = 50
@@ -81,7 +100,8 @@ if __name__ == '__main__':
     Train_Deep_model = False
     save_model = False;
     load_model = True;
-    trainset,testset,data_train,data_test,target_train,target_test,classes_dict,data_triplet_train,data_triplet_test,trainTripletFeaturesLoader,testTripletFeaturesLoader = GetStandardAndTripletFeaturesDataSets(device,batch_size)
+    trainset,testset,data_train,data_test,target_train,target_test,classes_dict,data_triplet_train,data_triplet_test = GetStandardAndTripletFeaturesDataSets(device,batch_size)
+    # Train model
     if Train_Deep_model:
         model = FashionCNNmodel(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=lr)
@@ -137,9 +157,10 @@ if __name__ == '__main__':
     if load_model:
         model = FashionCNNmodel(device)
         model.load_state_dict(torch.load('../models/modelStandardFashionMnist/modelFashionMnist'))
+    # Evaluate classical ML classifiers
     print('Prediction: ')
     acc_model = evaluate_prediction(testset,error)[1]
-    svm = SVC(kernel='rbf')
+    svm = SVC(kernel='linear')
     svm.fit(data_triplet_train,target_train)
     acc_svm = svm.score(data_triplet_test,target_test) * 100
     KNN = KNeighborsClassifier(n_neighbors=100)

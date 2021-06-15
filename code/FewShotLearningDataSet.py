@@ -15,6 +15,17 @@ import numpy as np
 # %% Functions
 
 def LoadDataFMnist(labels_out = [7,8,9]):
+    '''
+    Inputs:
+        labels_out: labels in support set
+    Returns: 
+        Train_X: Train set inputs
+        Train_Y: Train set ouputs
+        Test_X: Test set inputs
+        Test_Y: Test set ouputs
+        SupportSet_X: Support set inputs
+        SupportSet_Y: Support set ouputs
+    '''
     data = torchvision.datasets.FashionMNIST('../FashionMnist',download=True,transform=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.4914,),(0.2023,))]))
     X_full = data.data.numpy()
     labels = data.targets.numpy()
@@ -27,11 +38,21 @@ def LoadDataFMnist(labels_out = [7,8,9]):
     TrainTestSets_X = X_full[indForTrain]; TrainTestSets_Y = labels[indForTrain]
     SupportSet_X = X_full[~indForTrain]; SupportSet_Y = labels[~indForTrain]
     split_size = np.int64(len(TrainTestSets_X)*0.8)
-    Train_X = TrainTestSets_X[:split_size]; Train_Y =  TrainTestSets_Y[:split_size:]
-    Test_Y = TrainTestSets_X[:split_size]; Test_Y =  TrainTestSets_Y[split_size:]
-    return Train_X,Train_Y,Test_Y,Test_Y,np.reshape(SupportSet_X,(SupportSet_X.shape[0],1,28,28)),SupportSet_Y
+    Train_X = TrainTestSets_X[:split_size]; Train_Y =  TrainTestSets_Y[:split_size]
+    Test_X = TrainTestSets_X[split_size:]; Test_Y =  TrainTestSets_Y[split_size:]
+    return Train_X,Train_Y,Test_X,Test_Y,np.reshape(SupportSet_X,(SupportSet_X.shape[0],1,28,28)),SupportSet_Y
 
 def CreateTriplets(X,Y,TripletSetSize=60000):
+    '''
+    Inputs:
+        X: Input set
+        Y: Output set
+        TripletSetSize: output triplet sets size
+    Returns: 
+        X_triplets: Inputs of triplet set
+        Y_triplets: Labels of triplet set
+        Index_triplets: Index of triplet images
+    '''
     Y_triplets = []; Index_triplets = [];
     anchor_array = np.zeros((TripletSetSize,1,28,28))
     positive_array = np.zeros((TripletSetSize,1,28,28))
@@ -55,6 +76,19 @@ def CreateTriplets(X,Y,TripletSetSize=60000):
     
     
 def SupportSetAndQuery(SupportSet_X,SupportSet_Y,labels_out,k_way=2,n_shot=3):
+    '''
+    Inputs:
+        SupportSet_X: Support set inputs
+        SupportSet_Y: Support set outputs
+        labels_out: labels in support set
+        k_way: number of classes in actual support set
+        n_shot: number of shots in each class in support set
+    Returns: 
+        Query: Query image
+        QueryLabel: Query ground truth label
+        classes: classes in actual support et
+        SupportSet: actual support set of size k*n
+    '''
     labels_out = np.asarray(labels_out)
     QueryLabel = np.random.choice(labels_out)
     QueryInd = np.random.choice(np.where(SupportSet_Y==QueryLabel)[0])
@@ -85,7 +119,7 @@ if __name__ == '__main__':
     TripletTestSize = np.int64(60000*0.2)
     k_way=2
     n_shot=50
-    Train_X,Train_Y,Test_Y,Test_Y,SupportSet_X,SupportSet_Y = LoadDataFMnist(labels_out = labels_out)
+    Train_X,Train_Y,Test_X,Test_Y,SupportSet_X,SupportSet_Y = LoadDataFMnist(labels_out = labels_out)
     Train_X_triplets, Train_Y_triplets, Train_Index_triplets = CreateTriplets(Train_X,Train_Y,TripletSetSize=TripletSetSize)
     Test_X_triplets, Test_Y_triplets, Test_Index_triplets = CreateTriplets(Train_X,Train_Y,TripletSetSize=TripletTestSize)
     Query,QueryLabel,classes,SupportSet = SupportSetAndQuery(SupportSet_X,SupportSet_Y,labels_out,k_way=k_way,n_shot=n_shot)

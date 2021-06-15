@@ -22,6 +22,13 @@ from TripletNetwork import TripletNetModel
 # %% Functions
 
 def LoadData(batch_size):
+    '''
+    Inputs:
+        batch_size: batch size to define datasets by
+    Returns:
+        train_loader: train dataloader class
+        test_loader: test dataloader class
+    '''
     trainset = FashionMNIST_t('../data', train=True, download=True,transform=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.4914,),(0.2023,))]))
     testset = FashionMNIST_t('../data', train=False, transform=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.4914,),(0.2023,))]))
     train_loader = torch.utils.data.DataLoader(trainset,batch_size = batch_size, shuffle=True)
@@ -29,6 +36,17 @@ def LoadData(batch_size):
     return train_loader, test_loader
 
 def lossFunction(dist_plus, dist_minus, embedded_anchor, embedded_positive, embedded_negative,loss_type):
+    '''
+    Inputs:
+        dist_plus: distance between anchor and positive images
+        dist_minus: distance between anchor and negative images
+        embedded_anchor: triplet net embbeded vector output of anchor image
+        embedded_positive: triplet net embbeded vector output of positive image
+        embedded_negative: triplet net embbeded vector output of negative image
+        loss_type: 0 for pytorch triplet loss, 1 paper triplet loss
+    Returns:
+        loss: loss value
+    '''
     if loss_type == 0:
         loss = tripletLoss(anchor,positive,negative)
     elif loss_type == 1:
@@ -36,6 +54,13 @@ def lossFunction(dist_plus, dist_minus, embedded_anchor, embedded_positive, embe
     return loss
 
 def LoadBestModel(load_model,loss_type):
+    '''
+    Inputs:
+        load_model: load learned weights
+        loss_type: load weights in correspondes to loss trype
+    Returns:
+        model: model
+    '''
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = TripletNetModel(device)
     if load_model:
@@ -47,6 +72,13 @@ def LoadBestModel(load_model,loss_type):
     return model
 
 def evaluate_test(test_loader,loss_type):
+    '''
+    Inputs:
+        test_loader: test_loader class
+        loss_type: 0 for pytorch triplet loss, 1 paper triplet loss
+    Returns:
+        loss: loss value
+    '''
     model.eval()
     losses = []
     for batch_idx, (anchor, negative, positive) in enumerate(Bar(test_loader)):
@@ -62,6 +94,7 @@ def evaluate_test(test_loader,loss_type):
 # %% Main
 
 if __name__ == '__main__':
+    # Hyperparameters
     epochs = 500;
     batch_size = 64;
     gamma = 0.99;
@@ -74,11 +107,13 @@ if __name__ == '__main__':
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     train_loader, test_loader = LoadData(batch_size)
     model = TripletNetModel(device)
+    # Optimizer - Adam, Learning rate scheduler - Exponential learning rate
     optimizer = Adam(model.parameters(),lr = lr)
     scheduler = ExponentialLR(optimizer, gamma=gamma)
     losses = []; test_losses = []; dists_plus = []; dists_minus = []
     plt.figure()
     cur_loss = np.inf
+    # Training
     for epoch in range(epochs):
         print('Epoch number: ' + str(epoch + 1))
         plt.clf()

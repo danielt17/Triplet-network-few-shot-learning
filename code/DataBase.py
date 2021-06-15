@@ -18,9 +18,23 @@ import codecs
 import numpy as np
 import csv
 
+# %%
+
 # %% New data set defnition
 
 class FashionMNIST_t(data.Dataset):
+    '''
+    Inputs:
+        root: path of downloaded datasest
+        n_train_triplets: amount of training set samples
+        n_test_triplets: amount of test set samples
+        train: return train or test set
+        transform: preform transformations and/or augmentations on input data
+        target_tranform: preform transformations and/or augmentations on target data
+        download: download the dataset
+    Returns:
+        Dataset (training or test set)
+    '''
     urls = [
         'http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-images-idx3-ubyte.gz',
         'http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-labels-idx1-ubyte.gz',

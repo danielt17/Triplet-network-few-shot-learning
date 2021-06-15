@@ -13,7 +13,11 @@ import torch.nn as nn
 # %% Network
 
 class FashionCNN(nn.Module):
-    
+    '''
+    Returns:
+        nn.Module: Vanilla classifcation network
+        x: network output
+    '''
     def __init__(self):
         super(FashionCNN, self).__init__()
         
@@ -47,6 +51,12 @@ class FashionCNN(nn.Module):
         return out
     
 def FashionCNNmodel(device):
+    '''
+    Inputs:
+        device: cpu or cuda enbaled gpu
+    Returns:
+        Tnet: CNN on required device
+    '''
     model = FashionCNN()
     model.to(device)
     return model

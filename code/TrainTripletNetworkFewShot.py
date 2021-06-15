@@ -5,14 +5,6 @@ Created on Fri Jun 11 19:44:17 2021
 @author: danie
 """
 
-
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Jun  5 15:08:36 2021
-
-@author: danie
-"""
-
 # %% Imports
 
 import torch
@@ -38,6 +30,14 @@ matplotlib.rc('font', **font)
 # %% Functions
 
 def evaluate_test(Test_X_triplets,TripletTestSize,batch_size):
+    '''
+    Inputs:
+        Test_X_triplets: triplet list (anchor,positive,negative)
+        TripletTestSize: test set ssize
+        batch_size: batch size
+    Returns: 
+        losses: loss of test set
+    '''
     model.eval()
     losses = []
     for batch_idx in tqdm(range(TripletTestSize//batch_size)):
@@ -51,6 +51,10 @@ def evaluate_test(Test_X_triplets,TripletTestSize,batch_size):
     return losses
 
 def LoadBestModel():
+    '''
+    Returns: 
+        model: model with learned weights
+    '''
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = TripletNetModel(device)
     model.load_state_dict(torch.load('../models/FewShotLearningTripletNetwork/TripletModel'))
@@ -58,6 +62,19 @@ def LoadBestModel():
     return model
 
 def CalculateAccuracyFewShot(ExpNum,SupportSet_X,SupportSet_Y,labels_out,k_way,n_shot,device):
+    '''
+    Inputs:
+        ExpNum: Number of times to repeat expriement
+        SupportSet_X: Support set inputs
+        SupportSet_Y: Support set outputs
+        labels_out: labels in support set
+        k_way: number of classes in actual support set
+        n_shot: number of shots in each class in support set
+        device: cpu or cuda enbaled gpu 
+    Returns: 
+        acc: accuracy for given k ways and n shots
+        std: accuracy standard devation for given k ways and n shots
+    '''
     model.eval()
     acc = []
     for i in range(ExpNum):
@@ -74,6 +91,19 @@ def CalculateAccuracyFewShot(ExpNum,SupportSet_X,SupportSet_Y,labels_out,k_way,n
     return acc,std
 
 def CalculateNshotsAccuray(n_shot_num,ExpNum,SupportSet_X,SupportSet_Y,labels_out,k_way,device):
+    '''
+    Inputs:
+        n_shot_num: max number of shots
+        ExpNum: Number of times to repeat expriement
+        SupportSet_X: Support set inputs
+        SupportSet_Y: Support set outputs
+        labels_out: labels in support set
+        k_way: number of classes in actual support set
+        device: cpu or cuda enbaled gpu 
+    Returns: 
+        acc: (list) accuracy for given k ways and n shots
+        std: (list) accuracy standard devation for given k ways and n shots
+    '''
     acc = []
     std = []
     for n_shots in tqdm(range(n_shot_num)):
@@ -83,6 +113,19 @@ def CalculateNshotsAccuray(n_shot_num,ExpNum,SupportSet_X,SupportSet_Y,labels_ou
     return acc,std
     
 def CalculateKWaysAccuray(n_shot,k_way_num,ExpNum,SupportSet_X,SupportSet_Y,labels_out,device):
+    '''
+    Inputs:
+        n_shot: number of shots
+        k_way: maximum number of classes (ways)
+        ExpNum: Number of times to repeat expriement
+        SupportSet_X: Support set inputs
+        SupportSet_Y: Support set outputs
+        labels_out: labels in support set
+        device: cpu or cuda enbaled gpu 
+    Returns: 
+        acc: (list) accuracy for given k ways and n shots
+        std: (list) accuracy standard devation for given k ways and n shots
+    '''
     acc = []
     std = []
     for k_ways in tqdm(range(k_way_num)):
@@ -94,6 +137,7 @@ def CalculateKWaysAccuray(n_shot,k_way_num,ExpNum,SupportSet_X,SupportSet_Y,labe
 # %% Main
 
 if __name__ == '__main__':
+    # Hyperparameters
     epochs = 500;
     batch_size = 64;
     gamma = 0.99;
@@ -111,8 +155,10 @@ if __name__ == '__main__':
     Train_X_triplets, Train_Y_triplets, Train_Index_triplets = CreateTriplets(Train_X,Train_Y,TripletSetSize=TripletSetSize)
     Test_X_triplets, Test_Y_triplets, Test_Index_triplets = CreateTriplets(Train_X,Train_Y,TripletSetSize=TripletTestSize)
     model = TripletNetModel(device)
+    # Optimizer - Adam, Learning rate scheduler - Exponential learning rate
     optimizer = Adam(model.parameters(),lr = lr)
     scheduler = ExponentialLR(optimizer, gamma=gamma)
+    # Train model
     if train_model:
         losses = []; test_losses = []; dists_plus = []; dists_minus = []
         plt.figure()
@@ -173,6 +219,7 @@ if __name__ == '__main__':
             plt.pause(0.02)
     if load_model:
         model = LoadBestModel()
+    # Evaluate few shot learning scenario
     if FewShotEvaluation:
         k_way_temp = 3
         accN,stdN = CalculateNshotsAccuray(n_shot,ExpNum,SupportSet_X,SupportSet_Y,labels_out,k_way_temp,device)
