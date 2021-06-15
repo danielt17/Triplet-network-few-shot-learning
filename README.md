@@ -18,9 +18,6 @@ Triplet network for few shot learning
 
 - [Triplet-network-for-few-shot-learning](#Triplet-network-for-few-shot-learning)
   * [Agenda](#agenda)
-  * [Running The Notebooks](#running-the-notebooks)
-    + [Running Online](#running-online)
-    + [Running Locally](#running-locally)
   * [Installation Instructions](#installation-instructions)
     + [Libraries to Install](#libraries-to-install)
 
@@ -34,34 +31,6 @@ Triplet network for few shot learning
 |`models`| The folder holds all models trained during the project, the saved model is dictionary of the model weights|
 |`papers`| This folder holds the papers the project is based upon|
 |`pictures`| The folder holdss pictures gathered during the project, in order to display our results|
-
-
-## Running The Notebooks
-You can view the tutorials online or download and run locally.
-
-### Running Online
-
-|Service      | Usage |
-|-------------|---------|
-|Jupyter Nbviewer| Render and view the notebooks (can not edit) |
-|Binder| Render, view and edit the notebooks (limited time) |
-|Google Colab| Render, view, edit and save the notebooks to Google Drive (limited time) |
-
-
-Jupyter Nbviewer:
-
-[![nbviewer](https://jupyter.org/assets/main-logo.svg)](https://nbviewer.jupyter.org/github/taldatech/ee046202-unsupervised-learning-data-analysis/tree/master/)
-
-
-Press on the "Open in Colab" button below to use Google Colab:
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/taldatech/ee046202-unsupervised-learning-data-analysis)
-
-Or press on the "launch binder" button below to launch in Binder:
-
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/taldatech/ee046202-unsupervised-learning-data-analysis/master)
-
-Note: creating the Binder instance takes about ~5-10 minutes, so be patient
 
 ### Running Locally
 
