@@ -32,7 +32,7 @@ Triplet network for few shot learning
 
 ## Agenda
 
-|File       | Topics Covered |
+|Folders       | Content |
 |----------------|---------|
 |`Setting Up The Working Environment.pdf`| Guide for installing Anaconda locally with Python 3 and PyTorch, integration with PyCharm and using GPU on Google Colab |
 |`ee046211_tutorial_01_machine_learning_recap.ipynb/pdf`| Supervised and Unsupervised Learning, Model Evaluation, Bias-Variance Tradeoff, Feature Scaling, Linear Regression, Gradient Descent, Regularization (Ridge, LASSO)|
