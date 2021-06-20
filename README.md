@@ -28,7 +28,7 @@ This project was done as the final project in the course deep learning (046211) 
 
 |Folders       | Content |
 |----------------|---------|
-|`Main`| Contains all folders, additionaly project proposal is present in this folder|
+|`Main`| Contains all folders, additionaly project proposal and final report are present in this folder|
 |`code`| The folders contains all of the code written during the project. Including: triplet network training for metric learning, visulization (using T-SNE), triplet network training in the few shot learning setting|
 |`models`| The folder holds all models trained during the project, the saved model is dictionary of the model weights|
 |`papers`| This folder holds the papers the project is based upon|
