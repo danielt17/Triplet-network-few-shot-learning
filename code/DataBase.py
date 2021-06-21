@@ -24,6 +24,8 @@ import csv
 
 class FashionMNIST_t(data.Dataset):
     '''
+    Description:
+        This function creates a dataset object of triplet tuples.
     Inputs:
         root: path of downloaded datasest
         n_train_triplets: amount of training set samples

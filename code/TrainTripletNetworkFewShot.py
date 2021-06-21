@@ -31,6 +31,8 @@ matplotlib.rc('font', **font)
 
 def evaluate_test(Test_X_triplets,TripletTestSize,batch_size):
     '''
+    Description:
+        Calcualtes loss during training over test set
     Inputs:
         Test_X_triplets: triplet list (anchor,positive,negative)
         TripletTestSize: test set ssize
@@ -52,6 +54,8 @@ def evaluate_test(Test_X_triplets,TripletTestSize,batch_size):
 
 def LoadBestModel():
     '''
+    Description:
+        Load best model
     Returns: 
         model: model with learned weights
     '''
@@ -63,6 +67,8 @@ def LoadBestModel():
 
 def CalculateAccuracyFewShot(ExpNum,SupportSet_X,SupportSet_Y,labels_out,k_way,n_shot,device):
     '''
+    Description:
+        Cakculates the accuracy with respect to given k ways and n shots over ExpNum expriments
     Inputs:
         ExpNum: Number of times to repeat expriement
         SupportSet_X: Support set inputs
@@ -92,6 +98,8 @@ def CalculateAccuracyFewShot(ExpNum,SupportSet_X,SupportSet_Y,labels_out,k_way,n
 
 def CalculateNshotsAccuray(n_shot_num,ExpNum,SupportSet_X,SupportSet_Y,labels_out,k_way,device):
     '''
+    Description:
+        Calcualtes for a constant k_way the accuracy with respect to the number of n shots
     Inputs:
         n_shot_num: max number of shots
         ExpNum: Number of times to repeat expriement
@@ -114,6 +122,8 @@ def CalculateNshotsAccuray(n_shot_num,ExpNum,SupportSet_X,SupportSet_Y,labels_ou
     
 def CalculateKWaysAccuray(n_shot,k_way_num,ExpNum,SupportSet_X,SupportSet_Y,labels_out,device):
     '''
+    Description:
+        Calcualtes for a constant n shots the accuracy with respect to the number of k ways
     Inputs:
         n_shot: number of shots
         k_way: maximum number of classes (ways)
@@ -166,7 +176,7 @@ if __name__ == '__main__':
         for epoch in range(epochs):
             print('Epoch number: ' + str(epoch + 1))
             plt.clf()
-            dists_plus_temp = 0; dists_minus_temp = 0; loss_cur = [];
+            dists_plus_temp = []; dists_minus_temp = []; loss_cur = [];
             for batch_idx in tqdm(range(TripletSetSize//batch_size)):
                 anchor = Train_X_triplets[0][batch_idx*batch_size:(batch_idx+1)*batch_size].to(device).requires_grad_()
                 positive = Train_X_triplets[1][batch_idx*batch_size:(batch_idx+1)*batch_size].to(device).requires_grad_()
@@ -180,13 +190,13 @@ if __name__ == '__main__':
                 dists_plus_temp_temp = dist_plus.detach().cpu().numpy()
                 dists_minus_temp_temp = dist_minus.detach().cpu().numpy()
                 norm = np.exp(dists_plus_temp_temp) + np.exp(dists_minus_temp_temp)
-                dists_plus_temp =+ np.mean(np.exp(dists_plus_temp_temp)/norm)
-                dists_minus_temp =+ np.mean(np.exp(dists_minus_temp_temp)/norm)
+                dists_plus_temp.append(np.mean(np.exp(dists_plus_temp_temp)/norm))
+                dists_minus_temp.append(np.mean(np.exp(dists_minus_temp_temp)/norm))
                 loss_cur.append(loss.item())
             scheduler.step()
             losses.append(np.mean(loss_cur))
             test_losses.append(evaluate_test(Test_X_triplets,TripletTestSize,batch_size))
-            dists_plus.append(dists_plus_temp); dists_minus.append(dists_minus_temp); 
+            dists_plus.append(np.mean(dists_plus_temp)); dists_minus.append(np.mean(dists_minus_temp)); 
             print('Train Loss: ' + str(losses[-1]))
             print('Test Loss: ' + str(test_losses[-1]))
             print('Similarity: ' + str(dists_plus[-1]))

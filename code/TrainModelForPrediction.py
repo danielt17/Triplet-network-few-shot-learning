@@ -31,6 +31,8 @@ matplotlib.rc('font', **font)
 
 def GetStandardAndTripletFeaturesDataSets(device,batch_size):
     '''
+    Description:
+        This function returns for a given batch_size and device torch dataloaders and numpy tensors (triplets and example label combinations) for simple classification
     Inputs:
         data_triplet_train: cpu or cuda enbaled gpu
         batch_size: required batch size
@@ -54,6 +56,8 @@ def GetStandardAndTripletFeaturesDataSets(device,batch_size):
 
 def evaluate_prediction(test,error):
     '''
+    Description:
+        Calcualte loss and accuracy of test set with respect to given error measure
     Inputs:
         test: test dataloader
         error: loss object
@@ -77,6 +81,8 @@ def evaluate_prediction(test,error):
 
 def CalcualteAccuracy(outputs,label):
     '''
+    Description:
+        Calculates accuracy
     Inputs:
         outputs: CNN output probabilites
         label: ground truth label

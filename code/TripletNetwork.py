@@ -15,6 +15,8 @@ import torch.nn.functional as F
 
 class Net(nn.Module):
     '''
+    Description:
+        Defines backbone CNN
     Returns:
         nn.Module: backbone CNN
         x: network output
@@ -55,6 +57,8 @@ class Net(nn.Module):
 
 class TripletNetClass(nn.Module):
     '''
+    Description:
+        Defines the triplet network class
     Inputs:
         embedding net: backbone network for triplet network (nn.Module)
     Returns:
@@ -81,6 +85,8 @@ class TripletNetClass(nn.Module):
 
 def TripletNetModel(device):
     '''
+    Description:
+        This function creates a triplelet network model on a given device
     Inputs:
         device: cpu or cuda enbaled gpu
     Returns:

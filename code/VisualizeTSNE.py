@@ -29,6 +29,8 @@ matplotlib.rc('font', **font)
 
 def LoadData(device,batch_size=1):
     '''
+    Description:
+        Load Fashion-MNIST data and turn them to numpy objects
     Inputs:
         device: cpu or cuda enbaled gpu
         batch_size: load data one by one for plotting
@@ -56,6 +58,8 @@ def LoadData(device,batch_size=1):
 
 def ModelPrediction(dataloader,model,device):
     '''
+    Description:
+        Produce model outputs with respect to a given dataloader
     Inputs:
         dataloader: dataloader object
         model: triplet model
@@ -73,8 +77,10 @@ def ModelPrediction(dataloader,model,device):
         ls.append(temp_output)
     return np.array(ls)
 
-def PresentTSNE(dataset_numpy,targetset_numpy,classes_dict,title):
+def PresentTSNE(dataset_numpy,targetset_numpy,classes_dict):
     '''
+    Description:
+        This function presents the T-SNE visualization with respect to a given dataset examples and labels
     Inputs:
         dataset_numpy: dataset numpy array
         targetset_numpy: target labels numpy array
@@ -93,7 +99,6 @@ def PresentTSNE(dataset_numpy,targetset_numpy,classes_dict,title):
     plt.legend()
     plt.xlabel('First component')
     plt.ylabel('Second component')
-    plt.title(title)
     plt.show()
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
@@ -103,7 +108,6 @@ def PresentTSNE(dataset_numpy,targetset_numpy,classes_dict,title):
     ax.set_xlabel('First component')
     ax.set_ylabel('Second component')
     ax.set_zlabel('Third component')
-    plt.title(title)
     plt.show()
     
 # %% Main
@@ -113,8 +117,8 @@ if __name__ == '__main__':
     model = LoadBestModel(True,1)
     trainset ,testset,data_train,data_test,target_train,target_test,classes_dict = LoadData(device)
     data_model_test = ModelPrediction(testset,model,device)
-    PresentTSNE(data_test,target_test,classes_dict,title='TSNE over standard dataset')
-    PresentTSNE(data_model_test,target_test,classes_dict,title='TSNE over model dataset')
+    PresentTSNE(data_test,target_test,classes_dict) # title='TSNE over standard dataset'
+    PresentTSNE(data_model_test,target_test,classes_dict) # title='TSNE over model dataset'
     
     
     

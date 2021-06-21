@@ -14,6 +14,8 @@ import torch.nn as nn
 
 class FashionCNN(nn.Module):
     '''
+    Description:
+        Simple CNN for classification
     Returns:
         nn.Module: Vanilla classifcation network
         x: network output
@@ -52,6 +54,8 @@ class FashionCNN(nn.Module):
     
 def FashionCNNmodel(device):
     '''
+    Description:
+        Load CNN on given device and return model
     Inputs:
         device: cpu or cuda enbaled gpu
     Returns:

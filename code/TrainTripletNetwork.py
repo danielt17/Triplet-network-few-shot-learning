@@ -23,6 +23,8 @@ from TripletNetwork import TripletNetModel
 
 def LoadData(batch_size):
     '''
+    Description:
+        This function create train and test data-loaders of triplet tuples.
     Inputs:
         batch_size: batch size to define datasets by
     Returns:
@@ -37,6 +39,8 @@ def LoadData(batch_size):
 
 def lossFunction(dist_plus, dist_minus, embedded_anchor, embedded_positive, embedded_negative,loss_type):
     '''
+    Description:
+        This function returns the loss value with respect to the loss type, and given netowrk outputs.
     Inputs:
         dist_plus: distance between anchor and positive images
         dist_minus: distance between anchor and negative images
@@ -55,6 +59,8 @@ def lossFunction(dist_plus, dist_minus, embedded_anchor, embedded_positive, embe
 
 def LoadBestModel(load_model,loss_type):
     '''
+    Description:
+        Loads the best model, with respect to loss type
     Inputs:
         load_model: load learned weights
         loss_type: load weights in correspondes to loss trype
@@ -73,6 +79,8 @@ def LoadBestModel(load_model,loss_type):
 
 def evaluate_test(test_loader,loss_type):
     '''
+    Description:
+        Evaluates the model predictive power with respect to test set, and loss type
     Inputs:
         test_loader: test_loader class
         loss_type: 0 for pytorch triplet loss, 1 paper triplet loss
@@ -117,7 +125,7 @@ if __name__ == '__main__':
     for epoch in range(epochs):
         print('Epoch number: ' + str(epoch + 1))
         plt.clf()
-        dists_plus_temp = 0; dists_minus_temp = 0; loss_cur = [];
+        dists_plus_temp = []; dists_minus_temp = []; loss_cur = [];
         for batch_idx, (anchor, negative, positive) in enumerate(Bar(train_loader)):
             anchor = anchor.to(device).requires_grad_()
             negative = negative.to(device).requires_grad_()
@@ -131,15 +139,14 @@ if __name__ == '__main__':
             dists_plus_temp_temp = dist_plus.detach().cpu().numpy()
             dists_minus_temp_temp = dist_minus.detach().cpu().numpy()
             norm = np.exp(dists_plus_temp_temp) + np.exp(dists_minus_temp_temp)
-            dists_plus_temp =+ np.mean(np.exp(dists_plus_temp_temp)/norm)
-            dists_minus_temp =+ np.mean(np.exp(dists_minus_temp_temp)/norm)
+            dists_plus_temp.append(np.mean(np.exp(dists_plus_temp_temp)/norm))
+            dists_minus_temp.append(np.mean(np.exp(dists_minus_temp_temp)/norm))
             loss_cur.append(loss.item())
         scheduler.step()
-        losses.append(np.mean(loss_cur))
-        test_losses.append(evaluate_test(test_loader,loss_type))
+        losses.append(np.mean(loss_cur)); test_losses.append(evaluate_test(test_loader,loss_type))
+        dists_plus.append(np.mean(dists_plus_temp)); dists_minus.append(np.mean(dists_minus_temp)); 
         print('Train Loss: ' + str(losses[-1]))
         print('Test Loss: ' + str(test_losses[-1]))
-        dists_plus.append(dists_plus_temp); dists_minus.append(dists_minus_temp); 
         cur_loss = min(test_losses[-1],cur_loss)
         if save_model and cur_loss == test_losses[-1]:
             if loss_type == 0:

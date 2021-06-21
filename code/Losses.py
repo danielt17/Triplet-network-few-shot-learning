@@ -14,6 +14,8 @@ import torch.nn as nn
 
 def tripletLoss(anchor,positive,negative,margin = 1, p=2):
     '''
+    Description:
+        This function calculates the triplet loss (PyTorch implementation)
     Inputs:
         anchor: anchor image (tensor)
         positive: positive image (tensor)
@@ -29,6 +31,8 @@ def tripletLoss(anchor,positive,negative,margin = 1, p=2):
 
 def CustomLoss(dist_plus,dist_minus,margin = 1):
     '''
+    Description:
+        This function calculates the triplet loss (Paper reimplementation)
     Inputs:
         dist plus: distance between anchor image and positive image (tensor)
         dist minus: distance between anchor image and negative image (tensor)

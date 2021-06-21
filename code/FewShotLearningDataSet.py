@@ -16,6 +16,8 @@ import numpy as np
 
 def LoadDataFMnist(labels_out = [7,8,9]):
     '''
+    Description:
+        Splits data into train set and support set
     Inputs:
         labels_out: labels in support set
     Returns: 
@@ -44,6 +46,8 @@ def LoadDataFMnist(labels_out = [7,8,9]):
 
 def CreateTriplets(X,Y,TripletSetSize=60000):
     '''
+    Description:
+        Creates triplet PyTorch tensors
     Inputs:
         X: Input set
         Y: Output set
@@ -77,6 +81,8 @@ def CreateTriplets(X,Y,TripletSetSize=60000):
     
 def SupportSetAndQuery(SupportSet_X,SupportSet_Y,labels_out,k_way=2,n_shot=3):
     '''
+    Description:
+        Creates support set and query with respect to given parameters 
     Inputs:
         SupportSet_X: Support set inputs
         SupportSet_Y: Support set outputs
