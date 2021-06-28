@@ -8,7 +8,7 @@ Triplet network for few shot learning
 </h1>
   <p align="center">
     <a href="https://github.com/danielt17">Daniel Teitelman</a> •
-    <a href="https://github.com/GonenWeiss">Gonen Wiess</a> 
+    <a href="https://github.com/GonenWeiss">Gonen Weiss</a> 
   </p>
 
 * Picture by <a href="https://omoindrot.github.io/triplet-loss">Olivier Moindrot</a>.
@@ -23,16 +23,16 @@ Triplet network for few shot learning
 
 ## Agenda
 
-This project was done as the final project in the course deep learning (046211) at the technion. Our project focused on reimplmentating the paper 
-<a href="https://arxiv.org/abs/1412.6622">"Deep Metric Learning Using Triplet Network"</a> by Elad Hoffer, et.al. and testing it on a another dataset named: <a href="https://github.com/zalandoresearch/fashion-mnist">Fasion MNIST</a>. Afterwards we used the architecture in the setting of few shot learning and evaluted its performance. The project report, a short powerpoint presentation and a youtube video in which we present our project can be found <a href="https://github.com/danielt17/Triplet-network-few-shot-learning/blob/main/Triplet_Network_for_few_shot_learning.pdf">here</a>, <a href="https://github.com/danielt17/Triplet-network-few-shot-learning/blob/main/Triplet%20network%20for%20few%20shot%20learning.pptx">here</a>, and <a href="https://youtu.be/c-7FTQdXjI4">here</a> respectively.
+This project was done as the final project in the Deep Learning course (046211) at the Technion. Our project focused on reimplementing the paper 
+<a href="https://arxiv.org/abs/1412.6622">"Deep Metric Learning Using Triplet Network"</a> by Elad Hoffer et al. and testing it on another dataset, the <a href="https://github.com/zalandoresearch/fashion-mnist">Fasion MNIST</a>. Afterwards we used the architecture in the setting of few-shot learning and evaluated its performance. For the project <a href="https://github.com/danielt17/Triplet-network-few-shot-learning/blob/main/Triplet_Network_for_few_shot_learning.pdf">report</a>, a short PowerPoint <a href="https://github.com/danielt17/Triplet-network-few-shot-learning/blob/main/Triplet%20network%20for%20few%20shot%20learning.pptx">presentation</a> and a YouTube <a href="https://youtu.be/c-7FTQdXjI4">video</a> in which we present our project, follow the links.
 
 |Folders       | Content |
 |----------------|---------|
-|`Main`| Contains all folders, additionaly project proposal and final report are present in this folder|
-|`code`| The folders contains all of the code written during the project. Including: triplet network training for metric learning, visulization (using T-SNE), triplet network training in the few shot learning setting|
-|`models`| The folder holds all models trained during the project, the saved model is dictionary of the model weights|
-|`papers`| This folder holds the papers the project is based upon|
-|`pictures`| The folder holdss pictures gathered during the project, in order to display our results|
+|`Main`| Root of the project, containing the final report, the final presentation, the project proposal and all other files and folders|
+|`code`| Contains the code files of the project, including: triplet network training for metric learning, visualization (using T-SNE) and triplet network training in the few-shot learning setting|
+|`models`| Contains the models trained during the project, where each saved model is a dictionary of the model weights|
+|`papers`| Contains the papers upon which this project is based|
+|`pictures`| Contains pictures gathered during the project, in order to display our results|
 
 ### Running Locally
 
